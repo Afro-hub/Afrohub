@@ -249,7 +249,7 @@ export default function FAQ() {
                       src="/google-play-badge.svg"
                       alt="Get it on Google Play"
                       width={120}
-                      height={40}
+                      height={44}
                     />
                   </a>
                 </div>
