@@ -328,8 +328,8 @@ export default function Home() {
           <motion.div className={styles.downloadImage} variants={fadeInUp}>
             <Image
               src="/onBoarding2.png"
-              width={500}
-              height={400}
+              width={400}
+              height={500}
             />
           </motion.div>
         </motion.section>
