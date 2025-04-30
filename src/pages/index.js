@@ -26,6 +26,28 @@ export default function Home() {
     visible: { opacity: 1, y: 0 }
   };
 
+
+  const [events, setEvents] = useState([]);
+useEffect(() => {
+  const fetchEvents = async () => {
+    try {
+      const res = await fetch("https://afrohub.onrender.com/api/events/featured");
+      const data = await res.json();
+
+      // Sort by date descending and take the latest 6
+      const sortedEvents = data
+        .sort((a, b) => new Date(b.date) - new Date(a.date))
+        .slice(0, 6);
+
+      setEvents(sortedEvents);
+    } catch (error) {
+      console.error("Error fetching events:", error);
+    }
+  };
+  fetchEvents();
+}, []);
+
+
   return (
     <Layout>
       <div className={styles.container}>
@@ -57,19 +79,6 @@ export default function Home() {
               Your gateway to authentic Afro-inspired events, music, and culture from around the world.
             </motion.p>
 
-            <motion.div
-              className={styles.cta}
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6, duration: 0.8 }}
-            >
-              <Link href="/events">
-                <a className={styles.primaryButton}>Discover Events</a>
-              </Link>
-              <Link href="/signup">
-                <a className={styles.secondaryButton}>Create Account</a>
-              </Link>
-            </motion.div>
 
             <motion.div
               className={styles.badges}
@@ -202,55 +211,52 @@ export default function Home() {
 
         {/* Events Preview Section */}
         <motion.section
-          className={styles.eventsPreview}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-        >
-          <motion.h2 variants={fadeInUp}>Trending Events</motion.h2>
-          <motion.p className={styles.sectionSubtitle} variants={fadeInUp}>
-            Discover what's happening around you
-          </motion.p>
+              className={styles.eventsPreview}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+            >
+              <motion.h2 variants={fadeInUp}>Trending Events</motion.h2>
+              <motion.p className={styles.sectionSubtitle} variants={fadeInUp}>
+                Discover what's happening around you
+              </motion.p>
 
-          <motion.div
-            className={styles.eventCards}
-            variants={fadeInUp}
-          >
-            {[1, 2, 3].map((item) => (
-              <div key={item} className={styles.eventCard}>
-                <div className={styles.eventImageContainer}>
-                  <Image
-                    src={`/event-${item}.jpg`}
-                    alt={`Event ${item}`}
-                    layout="fill"
-                    objectFit="cover"
-                    className={styles.eventImage}
-                  />
-                  <div className={styles.eventDate}>
-                    <span>MAY</span>
-                    <span>{10 + item}</span>
+              <motion.div className={styles.eventCards} variants={fadeInUp}>
+                {events.map((event) => (
+                  <div key={event._id} className={styles.eventCard}>
+                    <div className={styles.eventImageContainer}>
+                      <Image
+                        src={event.image}
+                        alt={event.title}
+                        layout="fill"
+                        objectFit="cover"
+                        className={styles.eventImage}
+                      />
+                      <div className={styles.eventDate}>
+                        <span>{new Date(event.date).toLocaleString("default", { month: "short" }).toUpperCase()}</span>
+                        <span>{new Date(event.date).getDate()}</span>
+                      </div>
+                    </div>
+                    <div className={styles.eventInfo}>
+                      <h3>{event.title}</h3>
+                      <p className={styles.eventLocation}>
+                        <span className={styles.locationIcon}>📍</span> {event.location}
+                      </p>
+                      <div className={styles.eventMeta}>
+                        <span>{event.time}</span>
+                        <span className={styles.eventPrice}>${event.price}</span>
+                      </div>
+                    </div>
                   </div>
-                </div>
-                <div className={styles.eventInfo}>
-                  <h3>Afrobeats Night Vol. {item}</h3>
-                  <p className={styles.eventLocation}>
-                    <span className={styles.locationIcon}>📍</span> New York City
-                  </p>
-                  <div className={styles.eventMeta}>
-                    <span>8:00 PM</span>
-                    <span className={styles.eventPrice}>$25</span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </motion.div>
+                ))}
+              </motion.div>
 
-          <motion.div className={styles.viewAllContainer} variants={fadeInUp}>
-            <Link href="/events">
-              <a className={styles.viewAllButton}>View All Events</a>
-            </Link>
-          </motion.div>
-        </motion.section>
+              <motion.div className={styles.viewAllContainer} variants={fadeInUp}>
+                <Link href="/download" legacyBehavior>
+                  <a className={styles.viewAllButton}>View All Events</a>
+                </Link>
+              </motion.div>
+            </motion.section>
 
         {/* Testimonials Section */}
         <motion.section
