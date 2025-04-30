@@ -104,8 +104,7 @@ export default function Home() {
           >
             <div className={styles.phoneWrapper}>
               <Image
-                src="/afrohub-mockup.png"
-                alt="AfroHub App Mockup"
+                src="/onBoarding1.png"
                 width={400}
                 height={500}
                 className={styles.phoneImage}
@@ -328,8 +327,7 @@ export default function Home() {
 
           <motion.div className={styles.downloadImage} variants={fadeInUp}>
             <Image
-              src="/app-screens.png"
-              alt="AfroHub App Screens"
+              src="/onBoarding2.png"
               width={500}
               height={400}
             />
