@@ -1,0 +1,421 @@
+/* styles/Download.module.css */
+.downloadContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.heroSection {
+  display: flex;
+  align-items: center;
+  margin-bottom: 3rem;
+  padding: 2rem 0;
+}
+
+.heroContent {
+  flex: 1;
+  padding-right: 2rem;
+}
+
+.heroTitle {
+  font-size: 2.8rem;
+  font-weight: 700;
+  color: #008000;
+  margin-bottom: 1.2rem;
+}
+
+.heroSubtitle {
+  font-size: 1.2rem;
+  line-height: 1.6;
+  color: #4caf50;
+  max-width: 600px;
+}
+
+.heroImage {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.appPreview {
+  max-width: 300px;
+  width: 100%;
+}
+
+.appImagePlaceholder {
+  background: linear-gradient(135deg, #008000, #4caf50);
+  height: 500px;
+  border-radius: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  box-shadow: 0 12px 30px rgba(59, 47, 99, 0.3);
+}
+
+.platformSelector {
+  background: #f8f8fc;
+  border-radius: 16px;
+  padding: 2rem;
+  margin-bottom: 3rem;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+.platformTabs {
+  display: flex;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.platformTab {
+  background: none;
+  border: none;
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #4caf50;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.platformTab:hover {
+  color: #008000;
+}
+
+.activeTab {
+  color: #008000;
+  font-weight: 600;
+}
+
+.activeTab::after {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background-color: #008000;
+  border-radius: 3px 3px 0 0;
+}
+
+.platformIcon {
+  font-weight: bold;
+  font-size: 1.2rem;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #eaeaea;
+  border-radius: 50%;
+}
+
+.activeTab .platformIcon {
+  background: #008000;
+  color: white;
+}
+
+.platformContent {
+  padding: 1rem 0;
+}
+
+.platformContent h2 {
+  font-size: 1.8rem;
+  color: #008000;
+  margin-bottom: 1rem;
+}
+
+.platformContent p {
+  font-size: 1.1rem;
+  color: #4caf50;
+  margin-bottom: 1.5rem;
+}
+
+.requirementsBox {
+  background: white;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  border: 1px solid #eaeaea;
+}
+
+.requirementsBox h3 {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  color: #008000;
+}
+
+.requirementsBox ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+}
+
+.requirementsBox li {
+  margin-bottom: 0.5rem;
+  line-height: 1.5;
+}
+
+.downloadButtons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.storeButton {
+  display: flex;
+  align-items: center;
+  background: #008000;
+  color: white;
+  padding: 0.5rem 1.5rem;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.storeButton:hover {
+  background: #008000;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(59, 47, 99, 0.2);
+}
+
+.storeIcon {
+  font-size: 1.5rem;
+  margin-right: 10px;
+}
+
+.storeText {
+  display: flex;
+  flex-direction: column;
+}
+
+.storeText small {
+  font-size: 0.7rem;
+  letter-spacing: 0.5px;
+}
+
+.storeText strong {
+  font-size: 1.1rem;
+}
+
+.directDownloadButton {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  background: white;
+  color: #008000;
+  border: 2px solid #008000;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.directDownloadButton:hover {
+  background: #f0f0f7;
+  transform: translateY(-2px);
+}
+
+.osDownloadButtons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.osButton {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 1rem 2rem;
+  background: white;
+  color: #008000;
+  border: 2px solid #eaeaea;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  min-width: 180px;
+}
+
+.osButton:hover {
+  border-color: #008000;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+.osIcon {
+  font-weight: bold;
+  font-size: 1.2rem;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f0f0f7;
+  border-radius: 50%;
+  color: #008000;
+}
+
+.featureSection {
+  margin-bottom: 3rem;
+}
+
+.featureSectionTitle {
+  font-size: 2rem;
+  color: #008000;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.featureCard {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  text-align: center;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.featureCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.featureIcon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.featureCard h3 {
+  font-size: 1.3rem;
+  color: #008000;
+  margin-bottom: 0.8rem;
+}
+
+.featureCard p {
+  color: #666;
+  line-height: 1.5;
+}
+
+.faqSection {
+  margin-bottom: 3rem;
+}
+
+.faqTitle {
+  font-size: 2rem;
+  color: #008000;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.faqList {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.faqItem {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.faqItem:last-child {
+  border-bottom: none;
+}
+
+.faqItem h3 {
+  font-size: 1.2rem;
+  color: #008000;
+  margin-bottom: 0.8rem;
+}
+
+.faqItem p {
+  color: #666;
+  line-height: 1.5;
+}
+
+@media (max-width: 768px) {
+  .heroSection {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .heroContent {
+    padding-right: 0;
+    margin-bottom: 2rem;
+  }
+
+  .heroTitle {
+    font-size: 2.3rem;
+  }
+
+  .heroSubtitle {
+    margin: 0 auto;
+  }
+
+  .appPreview {
+    max-width: 250px;
+  }
+
+  .appImagePlaceholder {
+    height: 400px;
+  }
+
+  .platformTabs {
+    overflow-x: auto;
+    padding-bottom: 5px;
+  }
+
+  .platformTab {
+    padding: 1rem;
+    flex-shrink: 0;
+  }
+
+  .downloadButtons {
+    justify-content: center;
+  }
+
+  .osDownloadButtons {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .osButton {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .heroTitle {
+    font-size: 2rem;
+  }
+
+  .appImagePlaceholder {
+    height: 350px;
+  }
+
+  .platformSelector {
+    padding: 1.5rem 1rem;
+  }
+
+  .platformTab {
+    padding: 0.8rem;
+    font-size: 0.9rem;
+  }
+
+  .featureCard {
+    padding: 1.5rem;
+  }
+}

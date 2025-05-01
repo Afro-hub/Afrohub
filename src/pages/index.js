@@ -98,7 +98,7 @@ useEffect(() => {
                 <Image
                   src="/google-play-badge.svg"
                   alt="Get it on Google Play"
-                  width={150}
+                  width={158}
                   height={50}
                 />
               </a>
