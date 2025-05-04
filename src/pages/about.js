@@ -265,7 +265,7 @@ export default function About() {
           </motion.p>
           
           <motion.div className={styles.partnersGrid} variants={fadeIn}>
-            {[1, 2, 3, 4, 5, 6].map((index) => (
+            {[1, 2, 3, 4, 5].map((index) => (
               <motion.div 
                 key={index} 
                 className={styles.partnerLogo}
