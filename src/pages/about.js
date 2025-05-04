@@ -219,14 +219,9 @@ export default function About() {
                 bio: "Event planning expert with 8+ years of experience in the entertainment industry."
               },
               {
-                name: "Jamal Williams",
-                role: "CTO & Co-Founder",
-                bio: "Software engineer specializing in mobile applications and community platforms."
-              },
-              {
                 name: "Emmanuel Muyiwa Oladoyin",
                 role: "Head of Technology",
-                bio: "Tech leader driving innovation and building scalable solutions for AfroHub."
+                bio: "Software engineer specializing in mobile applications and community platforms."
               }
             ].map((member, index) => (
               <motion.div 
