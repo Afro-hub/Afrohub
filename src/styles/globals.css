@@ -130,11 +130,7 @@ p {
 }
 
 /* Link styles */
-a {
-  color: var(--primary-light);
-  text-decoration: none;
-  transition: color 0.2s ease, transform 0.2s ease;
-}
+
 
 a:hover {
   color: var(--primary-dark);
