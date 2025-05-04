@@ -9,7 +9,7 @@ export default function DownloadApp() {
 
   return (
     <Layout title="Download AfroHub | Connect with African Culture">
-      <div className={styles.downloadContainer}>
+      <div className={styles.downloadContainer} style={{ paddingTop: 24 }}>
         <div className={styles.heroSection}           style={{ paddingTop: 24 }}
 >
           <div className={styles.heroContent}>
