@@ -162,7 +162,7 @@ export default function DeleteAccount() {
         <div className={styles.supportMessage}>
           <h2>We're Sorry to See You Go</h2>
           <p>
-            If there's anything we can do to improve your experience on AfroHub, please let us know through our <a href="/feedback">feedback form</a> or by contacting <a href="mailto:support@afrohub.co">support@afrohub.co</a>.
+            If there's anything we can do to improve your experience on AfroHub, please let us know by contacting <a href="mailto:support@afrohub.co">support@afrohub.co</a>.
           </p>
           <p>
             You can always create a new account in the future if you'd like to return to our community.
