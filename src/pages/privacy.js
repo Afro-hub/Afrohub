@@ -140,8 +140,8 @@ export default function PrivacyPolicy() {
           </p>
           <p className={styles.contactInfo}>
             AfroHub<br />
-            Email: privacy@afrohub.com<br />
-            Address: 123 Main Street, Suite 100, City, Country
+            Email: info@afrohub.co<br />
+            Address: 16 Nandi lane Ranui, Auckland, New Zealand
           </p>
         </section>
       </div>

@@ -104,7 +104,7 @@ export default function DeleteAccount() {
           <div className={styles.alternativeMethod}>
             <h3>Request Account Deletion via Email</h3>
             <p>
-              If you're unable to access the app, you can request account deletion by sending an email from your registered email address to <a href="mailto:support@afrohub.com">support@afrohub.com</a> with the subject line "Account Deletion Request - [Your Username]".
+              If you're unable to access the app, you can request account deletion by sending an email from your registered email address to <a href="mailto:support@afrohub.co">support@afrohub.co</a> with the subject line "Account Deletion Request - [Your Username]".
             </p>
             <p>
               Please include the following information in your email:
@@ -122,7 +122,7 @@ export default function DeleteAccount() {
           <div className={styles.alternativeMethod}>
             <h3>Contact Customer Support</h3>
             <p>
-              If you're experiencing technical difficulties with the deletion process, please contact our customer support team through the app's help center or via <a href="mailto:help@afrohub.com">help@afrohub.com</a>.
+              If you're experiencing technical difficulties with the deletion process, please contact our customer support team through the app's help center or via <a href="mailto:support@afrohub.co">support@afrohub.co</a>.
             </p>
           </div>
         </div>
@@ -162,7 +162,7 @@ export default function DeleteAccount() {
         <div className={styles.supportMessage}>
           <h2>We're Sorry to See You Go</h2>
           <p>
-            If there's anything we can do to improve your experience on AfroHub, please let us know through our <a href="/feedback">feedback form</a> or by contacting <a href="mailto:feedback@afrohub.com">feedback@afrohub.com</a>.
+            If there's anything we can do to improve your experience on AfroHub, please let us know through our <a href="/feedback">feedback form</a> or by contacting <a href="mailto:support@afrohub.co">support@afrohub.co</a>.
           </p>
           <p>
             You can always create a new account in the future if you'd like to return to our community.

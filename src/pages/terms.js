@@ -95,7 +95,7 @@ export default function TermsOfService() {
             <li>A statement that the information in the notification is accurate, and, under penalty of perjury, that you are authorized to act on behalf of the copyright owner.</li>
           </ol>
           <p>
-            Our designated copyright agent can be reached at: copyright@afrohub.com
+            Our designated copyright agent can be reached at: info@afrohub.co
           </p>
         </section>
 
@@ -157,8 +157,8 @@ export default function TermsOfService() {
           </p>
           <p className={styles.contactInfo}>
             AfroHub<br />
-            Email: legal@afrohub.com<br />
-            Address: 123 Main Street, Suite 100, City, Country
+            Email: support@afrohub.co<br />
+            Address: 16 Nandi lane Ranui, Auckland, New Zealand
           </p>
         </section>
       </div>
