@@ -3,6 +3,8 @@ import { useState } from 'react';
 import Link from 'next/link';
 import Head from 'next/head';
 import styles from '../styles/Layout.module.css';
+import Image from 'next/image';
+
 
 export default function Layout({ children, title = 'AfroHub - Connect with African Culture' }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -23,7 +25,12 @@ export default function Layout({ children, title = 'AfroHub - Connect with Afric
       <header className={styles.header}>
         <div className={styles.headerContent}>
           <Link href="/" className={styles.logo}>
-            <span className={styles.logoText}>AfroHub</span>
+            <span><Image
+                                    src="/logo2.png"
+                                    alt="Download on the App Store"
+                                    width={124}
+                                    height={32}
+                                  /></span>
           </Link>
           
           <button 
