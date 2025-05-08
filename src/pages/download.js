@@ -79,7 +79,7 @@ export default function DownloadApp() {
                                       height={88}
                                     />
                   </a>
-                  <a href="/direct-download/afrohub-latest.apk"
+                  <a href="/direct-download/app-release.apk"
                      className={styles.directDownloadButton}>
                     Direct Download APK (v1.5.3)
                   </a>
