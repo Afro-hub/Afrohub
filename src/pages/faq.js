@@ -226,7 +226,7 @@ export default function FAQ() {
             <div className={styles.appPromo}>
               <div className={styles.appImage}>
                 <Image 
-                  src="/app-icon.png" 
+                  src="/favicon.ico"
                   alt="AfroHub App" 
                   width={80} 
                   height={80}
