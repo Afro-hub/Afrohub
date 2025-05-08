@@ -104,8 +104,8 @@ export default function Contact() {
                 <span className={styles.icon}>📍</span>
               </div>
               <h3>Visit Us</h3>
-              <p>123 Afro Street</p>
-              <p>New York, NY 10001</p>
+              <p>16 Nandi lane Ranui,</p>
+              <p>Auckland, New Zealand</p>
             </motion.div>
 
             <motion.div className={styles.infoCard} variants={fadeInUp}>
@@ -113,7 +113,7 @@ export default function Contact() {
                 <span className={styles.icon}>📞</span>
               </div>
               <h3>Call Us</h3>
-              <p>+1 (123) 456-7890</p>
+              <p>+64 22 124 2900</p>
               <p>Mon-Fri, 9am-6pm EST</p>
             </motion.div>
 
