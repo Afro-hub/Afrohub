@@ -92,11 +92,11 @@ export default function FAQ() {
         },
         {
           question: "Can I use AfroHub on my computer?",
-          answer: "Yes! While our mobile app offers the best experience, you can access most features through our website at www.afrohub.co using any modern web browser."
+          answer: "Yes! While our mobile app offers the best experience, you can access most features through our website at www.afrohub.org using any modern web browser."
         },
         {
           question: "How do I contact customer support?",
-          answer: "You can reach our support team through the 'Help & Support' section in the app, via email at support@afrohub.co, or through our social media channels. Our support hours are 24/7 for urgent matters and 9 AM - 6 PM EST for general inquiries."
+          answer: "You can reach our support team through the 'Help & Support' section in the app, via email at support@afrohub.org, or through our social media channels. Our support hours are 24/7 for urgent matters and 9 AM - 6 PM EST for general inquiries."
         }
       ]
     }

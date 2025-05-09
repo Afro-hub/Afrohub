@@ -122,8 +122,8 @@ export default function Contact() {
                 <span className={styles.icon}>✉️</span>
               </div>
               <h3>Email Us</h3>
-              <p>info@afrohub.co</p>
-              <p>support@afrohub.co</p>
+              <p>info@afrohub.org</p>
+              <p>support@afrohub.org</p>
             </motion.div>
             
             <motion.div className={styles.socialLinks} variants={fadeInUp}>
@@ -299,7 +299,7 @@ export default function Contact() {
               },
               {
                 question: "I need help with a ticket I purchased",
-                answer: "For issues with tickets, please contact our support team at support@afrohub.co with your order number and details about your issue."
+                answer: "For issues with tickets, please contact our support team at support@afrohub.org with your order number and details about your issue."
               }
             ].map((faq, index) => (
               <motion.div 
