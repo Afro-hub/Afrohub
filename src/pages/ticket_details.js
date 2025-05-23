@@ -102,9 +102,9 @@ export default function TicketDetails() {
   const eventPrice = ['free', 'Free', '', '0', '0.0'].includes(event.price) ? '0' : event.price;
 
   return (
-        <Layout title="Download AfroHub | Connect with African Culture">
+        <Layout title="AfroHub | Connect with African Culture">
     
- <div className="max-w-6xl mx-auto px-4 py-12 grid grid-cols-1 lg:grid-cols-2 gap-10">
+ <div className="max-w-6xl mx-auto px-4 py-12 grid grid-cols-1 lg:grid-cols-2 gap-10" style={{ paddingTop: 40 }}>
   {/* LEFT: Event Image */}
   <div>
     <Image
@@ -134,19 +134,10 @@ export default function TicketDetails() {
   src={`https://www.openstreetmap.org/export/embed.html?bbox=${event.longitude - 0.01}%2C${event.latitude - 0.01}%2C${event.longitude + 0.01}%2C${event.latitude + 0.01}&layer=mapnik&marker=${event.latitude}%2C${event.longitude}`}
 />
 
-              <div className={styles.mapPin}>
-                <span>📍</span>
-              </div>
+             
             </div>
           </div>
-          <a
-  href={`https://www.openstreetmap.org/?mlat=${event.latitude}&mlon=${event.longitude}`}
-  target="_blank"
-  rel="noopener noreferrer"
-  className="text-sm text-blue-500 underline mt-2 inline-block"
->
-  View Full Map
-</a>
+          
 
     </div>
 
@@ -154,12 +145,15 @@ export default function TicketDetails() {
       {eventPrice === '0' ? 'Free' : `$${eventPrice}`}
     </div>
 
-    {/* Buy Button */}
-    {event.unit > 0 && (
       <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl text-lg shadow-lg transition">
-        Buy Ticket
-      </button>
-    )}
+      <a
+  href={`https://www.openstreetmap.org/?mlat=${event.latitude}&mlon=${event.longitude}`}
+  target="_blank"
+  rel="noopener noreferrer"
+  className="text-sm text-blue-500 underline mt-2 inline-block"
+>
+  View Full Map
+</a>      </button>
   </div>
 </div>
 
