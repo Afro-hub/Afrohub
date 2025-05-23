@@ -224,6 +224,7 @@ useEffect(() => {
               <motion.div className={styles.eventCards} variants={fadeInUp}>
                 {events.map((event) => (
                   <div key={event._id} className={styles.eventCard}>
+                    <Link key={event.id} href={`/ticket_details?eventId=${event._id}`}>
                     <div className={styles.eventImageContainer}>
                       <Image
                         src={event.image}
@@ -246,7 +247,8 @@ useEffect(() => {
                         <span>{event.time}</span>
                         <span className={styles.eventPrice}>${event.price}</span>
                       </div>
-                    </div>
+                      </div>
+                      </Link>
                   </div>
                 ))}
               </motion.div>
