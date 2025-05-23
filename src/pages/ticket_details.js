@@ -34,7 +34,7 @@ import {
  * @returns {Promise<EventDetails>}
  */
 const getEventDetails = async (eventId) => {
-  const response = await fetch(`/api/events/${eventId}`);
+  const response = await fetch(`https://afrohub.onrender.com/api/events/${eventId}`);
   if (!response.ok) throw new Error('Failed to fetch event details');
   return response.json();
 };
