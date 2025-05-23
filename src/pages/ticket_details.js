@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 import Layout from '../components/Layout';
+import styles from '../styles/Contact.module.css';
 
 import Head from 'next/head';
 import {
@@ -103,7 +104,7 @@ export default function TicketDetails() {
   return (
         <Layout title="Download AfroHub | Connect with African Culture">
     
-      <div className="max-w-6xl mx-auto px-4 py-12 grid grid-cols-1 lg:grid-cols-2 gap-10">
+ <div className="max-w-6xl mx-auto px-4 py-12 grid grid-cols-1 lg:grid-cols-2 gap-10">
   {/* LEFT: Event Image */}
   <div>
     <Image
@@ -122,8 +123,31 @@ export default function TicketDetails() {
     <p className="text-gray-700">{event.description}</p>
 
     <div className="flex items-center text-gray-600 space-x-2">
-      <MapPinIcon className="h-5 w-5 text-blue-500" />
-      <span>{event.location}</span>
+    <div className={styles.mapContainer}>
+            {/* Replace with your actual Google Maps embed or an image of a map */}
+            <div className={styles.map}>
+            <iframe
+  width="100%"
+  height="300"
+  style={{ border: 0, borderRadius: '12px' }}
+  loading="lazy"
+  src={`https://www.openstreetmap.org/export/embed.html?bbox=${event.longitude - 0.01}%2C${event.latitude - 0.01}%2C${event.longitude + 0.01}%2C${event.latitude + 0.01}&layer=mapnik&marker=${event.latitude}%2C${event.longitude}`}
+/>
+
+              <div className={styles.mapPin}>
+                <span>📍</span>
+              </div>
+            </div>
+          </div>
+          <a
+  href={`https://www.openstreetmap.org/?mlat=${event.latitude}&mlon=${event.longitude}`}
+  target="_blank"
+  rel="noopener noreferrer"
+  className="text-sm text-blue-500 underline mt-2 inline-block"
+>
+  View Full Map
+</a>
+
     </div>
 
     <div className="text-2xl font-semibold text-gray-800">
