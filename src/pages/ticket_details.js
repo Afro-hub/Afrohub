@@ -104,7 +104,7 @@ export default function TicketDetails() {
   return (
         <Layout title="AfroHub | Connect with African Culture">
     
- <div className="max-w-6xl mx-auto px-4 py-12 grid grid-cols-1 lg:grid-cols-2 gap-10" style={{ paddingTop: 40 }}>
+ <div className="max-w-6xl mx-auto px-4 py-12 grid grid-cols-1 lg:grid-cols-2 gap-10" style={{ paddingTop: 64 }}>
   {/* LEFT: Event Image */}
   <div>
     <Image
@@ -145,15 +145,9 @@ export default function TicketDetails() {
       {eventPrice === '0' ? 'Free' : `$${eventPrice}`}
     </div>
 
-      <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl text-lg shadow-lg transition">
-      <a
-  href={`https://www.openstreetmap.org/?mlat=${event.latitude}&mlon=${event.longitude}`}
-  target="_blank"
-  rel="noopener noreferrer"
-  className="text-sm text-blue-500 underline mt-2 inline-block"
->
-  View Full Map
-</a>      </button>
+      <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl text-lg shadow-lg transition" onClick={openMap}>
+     
+  View Full Map  </button>
   </div>
 </div>
 
