@@ -104,7 +104,7 @@ export default function TicketDetails() {
   return (
         <Layout title="AfroHub | Connect with African Culture">
     
- <div className="max-w-6xl mx-auto px-4 py-12 grid grid-cols-1 lg:grid-cols-2 gap-10" style={{ paddingTop: 64 }}>
+ <div className="max-w-6xl mx-auto px-4 py-12 grid grid-cols-1 lg:grid-cols-2 gap-10" style={{ paddingTop: 80 }}>
   {/* LEFT: Event Image */}
   <div>
     <Image
@@ -119,7 +119,8 @@ export default function TicketDetails() {
   {/* RIGHT: Event Details */}
   <div className="space-y-6">
     <h1 className="text-3xl font-bold text-gray-900">{event.title}</h1>
-    <p className="text-sm text-gray-500">{event.date} • {event.time}</p>
+    <p className="text-sm text-gray-500">{event.date} • {event.time} • {eventPrice === '0' ? 'Free' : `$${eventPrice}`}
+    </p>
     <p className="text-gray-700">{event.description}</p>
 
     <div className="flex items-center text-gray-600 space-x-2">
@@ -141,9 +142,6 @@ export default function TicketDetails() {
 
     </div>
 
-    <div className="text-2xl font-semibold text-gray-800">
-      {eventPrice === '0' ? 'Free' : `$${eventPrice}`}
-    </div>
 
       <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl text-lg shadow-lg transition" onClick={openMap}>
      
