@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
+import Layout from '../components/Layout';
+
 import Head from 'next/head';
 import {
   MapPinIcon,
@@ -99,102 +101,44 @@ export default function TicketDetails() {
   const eventPrice = ['free', 'Free', '', '0', '0.0'].includes(event.price) ? '0' : event.price;
 
   return (
-    <>
-      <Head>
-        <title>{event.title} • Event Details</title>
-        <meta name="description" content={event.description} />
-      </Head>
-      <div className="min-h-screen bg-gray-50 pb-24">
-        <div className="sticky top-0 z-20 bg-white/80 backdrop-blur px-4 py-3 flex items-center shadow-sm">
-          <button
-            onClick={() => router.back()}
-            className="bg-blue-50 p-2 rounded-full hover:bg-blue-100 transition-colors"
-          >
-            <ArrowLeftIcon className="h-5 w-5 text-blue-600" />
-          </button>
-          <span className="ml-4 text-lg font-semibold text-gray-800 truncate">
-            {event.title}
-          </span>
-        </div>
+        <Layout title="Download AfroHub | Connect with African Culture">
+    
+      <div className="max-w-6xl mx-auto px-4 py-12 grid grid-cols-1 lg:grid-cols-2 gap-10">
+  {/* LEFT: Event Image */}
+  <div>
+    <Image
+      src={event.image.startsWith('http') ? event.image : `/images/${event.image}`}
+      alt={event.title}
+      width={700}
+      height={700}
+      className="rounded-xl shadow-md object-cover w-full h-auto"
+    />
+  </div>
 
-        <div className="relative h-72 sm:h-96">
-          <Image
-            src={event.image.startsWith('http') ? event.image : `/images/${event.image}`}
-            alt={event.title}
-            fill
-            className="object-cover rounded-b-3xl"
-            priority
-          />
-        </div>
+  {/* RIGHT: Event Details */}
+  <div className="space-y-6">
+    <h1 className="text-3xl font-bold text-gray-900">{event.title}</h1>
+    <p className="text-sm text-gray-500">{event.date} • {event.time}</p>
+    <p className="text-gray-700">{event.description}</p>
 
-        <div className="max-w-2xl mx-auto px-4 py-6">
-          <SectionCard>
-            <p className="text-gray-500 text-sm mb-1">{event.date} {event.time}</p>
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">{event.title}</h1>
-            <div className="flex items-center text-gray-600 mb-2">
-              <MapPinIcon className="h-4 w-4 mr-2" />
-              <span>{event.location}</span>
-            </div>
-          </SectionCard>
+    <div className="flex items-center text-gray-600 space-x-2">
+      <MapPinIcon className="h-5 w-5 text-blue-500" />
+      <span>{event.location}</span>
+    </div>
 
-          <SectionCard className="flex items-center">
-            <TicketIcon className="h-6 w-6 text-blue-500 mr-3" />
-            <span className="font-medium text-gray-700">Price</span>
-            <div className="ml-auto">
-              <span className="text-xl font-semibold text-gray-800">
-                {eventPrice === '0' ? 'Free' : `$${eventPrice}`}
-              </span>
-            </div>
-          </SectionCard>
+    <div className="text-2xl font-semibold text-gray-800">
+      {eventPrice === '0' ? 'Free' : `$${eventPrice}`}
+    </div>
 
-          <SectionCard>
-            <SectionHeader icon={TicketIcon} title="Category" />
-            <span className="inline-block bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
-              {event.category}
-            </span>
-          </SectionCard>
+    {/* Buy Button */}
+    {event.unit > 0 && (
+      <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl text-lg shadow-lg transition">
+        Buy Ticket
+      </button>
+    )}
+  </div>
+</div>
 
-          <SectionCard>
-            <SectionHeader icon={MapPinIcon} title="Address" />
-            <p className="text-gray-600">{event.address}</p>
-          </SectionCard>
-
-          <SectionCard>
-            <SectionHeader title="Description" />
-            <p className="text-gray-700 leading-relaxed">{event.description}</p>
-          </SectionCard>
-
-          <SectionCard>
-            <SectionHeader icon={TicketIcon} title="Availability" />
-            <div className="bg-green-50 p-4 rounded-lg flex items-center">
-              <div className="flex-1">
-                <p className="font-medium text-green-800">Tickets Available</p>
-                <p className="text-sm text-green-600">{event.unit} tickets remaining</p>
-              </div>
-              <div className="text-2xl font-bold text-green-600">{event.unit}</div>
-            </div>
-          </SectionCard>
-
-          <SectionCard>
-            <SectionHeader icon={MapIcon} title="Location" />
-            <EventMap
-              latitude={event.latitude}
-              longitude={event.longitude}
-              onOpenMap={openMap}
-            />
-          </SectionCard>
-        </div>
-
-        {event.unit > 0 && (
-          <div className="fixed bottom-0 left-0 right-0 z-30 bg-white border-t px-4 py-4 flex justify-center">
-            <button
-              className="w-full max-w-md bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl text-lg shadow-lg transition"
-            >
-              Buy Ticket
-            </button>
-          </div>
-        )}
-      </div>
-    </>
+    </Layout>
   );
 }
