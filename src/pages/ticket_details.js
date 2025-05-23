@@ -106,7 +106,8 @@ export default function TicketDetails() {
     
  <div className="max-w-6xl mx-auto px-4 py-12 grid grid-cols-1 lg:grid-cols-2 gap-10" style={{ paddingTop: 80 }}>
   {/* LEFT: Event Image */}
-  <div>
+  <div className={styles.mapContainer}>
+          
     <Image
       src={event.image.startsWith('http') ? event.image : `/images/${event.image}`}
       alt={event.title}
@@ -125,15 +126,14 @@ export default function TicketDetails() {
 
     <div className="flex items-center text-gray-600 space-x-2">
     <div className={styles.mapContainer}>
-            {/* Replace with your actual Google Maps embed or an image of a map */}
             <div className={styles.map}>
-            <iframe
-  width="100%"
-  height="300"
-  style={{ border: 0, borderRadius: '12px' }}
-  loading="lazy"
-  src={`https://www.openstreetmap.org/export/embed.html?bbox=${event.longitude - 0.01}%2C${event.latitude - 0.01}%2C${event.longitude + 0.01}%2C${event.latitude + 0.01}&layer=mapnik&marker=${event.latitude}%2C${event.longitude}`}
-/>
+              <iframe
+                  width="100%"
+                  height="300"
+                  style={{ border: 0, borderRadius: '12px' }}
+                  loading="lazy"
+                  src={`https://www.openstreetmap.org/export/embed.html?bbox=${event.longitude - 0.01}%2C${event.latitude - 0.01}%2C${event.longitude + 0.01}%2C${event.latitude + 0.01}&layer=mapnik&marker=${event.latitude}%2C${event.longitude}`}
+                />
 
              
             </div>
@@ -142,10 +142,10 @@ export default function TicketDetails() {
 
     </div>
 
-
+<div style={{ paddingTop: 12 }}>
       <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl text-lg shadow-lg transition" onClick={openMap}>
      
-  View Full Map  </button>
+  View Full Map  </button></div>
   </div>
 </div>
 
