@@ -106,16 +106,14 @@ export default function TicketDetails() {
     
  <div className="max-w-6xl mx-auto px-4 py-12 grid grid-cols-1 lg:grid-cols-2 gap-10" style={{ paddingTop: 80 }}>
   {/* LEFT: Event Image */}
-  <div className={styles.mapContainer}>
           
     <Image
       src={event.image.startsWith('http') ? event.image : `/images/${event.image}`}
       alt={event.title}
       width={700}
       height={700}
-      className="rounded-xl shadow-md object-cover w-full h-auto"
-    />
-  </div>
+      className="rounded-[12px] shadow-md object-cover w-full h-auto"
+      />
 
   {/* RIGHT: Event Details */}
   <div className="space-y-6">
