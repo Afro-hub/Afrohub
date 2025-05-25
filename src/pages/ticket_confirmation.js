@@ -67,19 +67,19 @@ const TicketInfo = ({ ticketCount, buyerName, confirmationNumber }) => (
 );
 
 const EventSummary = ({ event, ticketCount }) => {
-  const eventPrice = ['free', 'Free', '', '0', '0.0'].includes(event.price) ? '0' : event.price;
+  const eventPrice = ['free', 'Free', '', '0', '0.0'].includes(event.pricePerUnit) ? '0' : event.pricePerUnit;
   const totalPrice = eventPrice === '0' ? 0 : parseFloat(eventPrice) * parseInt(ticketCount);
   
   return (
     <SectionCard>
       <div className="flex space-x-4">
         <Image
-      src={event.image.startsWith('http') ? event.image : `/images/${event.image}`}
-      alt={event.title}
-      width={700}
-      height={700}
-      className="rounded-[12px] shadow-md object-cover w-full h-auto"
-      />
+          src={event.image.startsWith('http') ? event.image : `/images/${event.image}`}
+          alt={event.title}
+          width={700}
+          height={700}
+          className="rounded-[12px] shadow-md object-cover w-full h-auto"
+        />
         <div className="flex-grow">
           <h3 className="font-bold text-xl text-gray-900 mb-2">{event.title}</h3>
           <div className="space-y-2 text-sm text-gray-600">
@@ -95,6 +95,12 @@ const EventSummary = ({ event, ticketCount }) => {
               <TicketIcon className="h-4 w-4 mr-2" />
               <span>{ticketCount} ticket{ticketCount > 1 ? 's' : ''}</span>
             </div>
+            {event.theme && (
+              <div className="flex items-center">
+                <span className="h-4 w-4 mr-2 text-purple-500">🎨</span>
+                <span>Theme: {event.theme}</span>
+              </div>
+            )}
           </div>
           <div className="mt-4 pt-4 border-t border-gray-200">
             <div className="flex justify-between items-center">
@@ -123,35 +129,41 @@ const ActionButtons = ({ onPrint, onShare, onViewEvent }) => (
 
 export default function TicketConfirmation() {
   const router = useRouter();
-  const { eventId, ticketCount, buyerName } = router.query;
+  const { 
+    eventId, 
+    ticketCount, 
+    buyerName, 
+    title, 
+    date, 
+    time, 
+    location, 
+    image, 
+    theme, 
+    pricePerUnit,
+    confirmationNumber 
+  } = router.query;
+  
   const [event, setEvent] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [confirmationNumber, setConfirmationNumber] = useState('');
 
   useEffect(() => {
-    if (!eventId) return;
-    
-    // Generate confirmation number
-    const generateConfirmationNumber = () => {
-      return 'AF' + Date.now().toString().slice(-8) + Math.random().toString(36).substr(2, 3).toUpperCase();
-    };
-    
-    setConfirmationNumber(generateConfirmationNumber());
+    if (!eventId || !title) return;
 
-    (async () => {
-      try {
-        setIsLoading(true);
-        const response = await fetch(`https://afrohub.onrender.com/api/events/${eventId}`);
-        if (!response.ok) throw new Error('Failed to fetch event');
-        const data = await response.json();
-        setEvent(data);
-      } catch (e) {
-        console.error(e);
-      } finally {
-        setIsLoading(false);
-      }
-    })();
-  }, [eventId]);
+    // Create event object from URL parameters
+    const eventData = {
+      id: eventId,
+      title: decodeURIComponent(title || ''),
+      date: decodeURIComponent(date || ''),
+      time: decodeURIComponent(time || ''),
+      location: decodeURIComponent(location || ''),
+      image: decodeURIComponent(image || ''),
+      theme: theme ? decodeURIComponent(theme) : '',
+      pricePerUnit: decodeURIComponent(pricePerUnit || '0')
+    };
+
+    setEvent(eventData);
+    setIsLoading(false);
+  }, [eventId, title, date, time, location, image, theme, pricePerUnit, confirmationNumber]);
 
   const handlePrint = () => {
     window.print();
@@ -205,12 +217,12 @@ export default function TicketConfirmation() {
   return (
     <Layout title="AfroHub | Ticket Confirmation">
       <div className="max-w-4xl mx-auto px-4 py-12" style={{ paddingTop: 80 }}>
-               <EventSummary 
+        <EventSummary 
           event={event}
           ticketCount={ticketCount}
         />
         
-         <ConfirmationSuccess />
+        <ConfirmationSuccess />
         
         <TicketInfo 
           ticketCount={ticketCount}
