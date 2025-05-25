@@ -114,24 +114,9 @@ const ActionButtons = ({ onPrint, onShare, onViewEvent }) => (
   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
     <button
       onClick={onPrint}
-      className="flex items-center justify-center bg-white border-2 border-gray-300 text-gray-700 font-semibold py-3 px-4 rounded-xl hover:bg-gray-50 transition-colors"
-    >
+      className="flex items-center justify-center bg-white border-2 border-gray-300 text-gray-700 font-semibold py-3 px-4 rounded-xl hover:bg-gray-50 transition-colors">
       <PrinterIcon className="h-5 w-5 mr-2" />
       Print Tickets
-    </button>
-    <button
-      onClick={onShare}
-      className="flex items-center justify-center bg-white border-2 border-blue-500 text-blue-600 font-semibold py-3 px-4 rounded-xl hover:bg-blue-50 transition-colors"
-    >
-      <ShareIcon className="h-5 w-5 mr-2" />
-      Share Event
-    </button>
-    <button
-      onClick={onViewEvent}
-      className="flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-xl transition-colors"
-    >
-      <TicketIcon className="h-5 w-5 mr-2" />
-      View Event Details
     </button>
   </div>
 );
