@@ -232,14 +232,8 @@ export default function TicketConfirmation() {
           buyerName={buyerName}
           confirmationNumber={confirmationNumber}
         />
-        
-
-        
-        <ActionButtons 
-          onPrint={handlePrint}
-          onShare={handleShare}
-          onViewEvent={handleViewEvent}
-        />
+       
+        <ActionButtons onPrint={handlePrint}/>
         
         <div className="mt-8 p-6 bg-green-50 rounded-xl border border-green-200">
           <h3 className="font-bold text-green-800 mb-2">Important Information</h3>
@@ -249,16 +243,6 @@ export default function TicketConfirmation() {
             <li>• Arrive at least 30 minutes before the event starts</li>
             <li>• For questions, contact event organizers</li>
           </ul>
-        </div>
-        
-        <div className="mt-6 text-center">
-          <button
-            onClick={handleBackToEvents}
-            className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
-          >
-            <ArrowLeftIcon className="h-4 w-4 mr-2" />
-            Browse More Events
-          </button>
         </div>
       </div>
     </Layout>
