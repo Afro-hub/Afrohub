@@ -72,7 +72,6 @@ const EventSummary = ({ event, ticketCount }) => {
   
   return (
     <SectionCard>
-      <SectionHeader icon={CalendarIcon} title="Event Details" />
       <div className="flex space-x-4">
         <Image
       src={event.image.startsWith('http') ? event.image : `/images/${event.image}`}
