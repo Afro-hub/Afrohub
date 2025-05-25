@@ -221,7 +221,12 @@ export default function TicketConfirmation() {
   return (
     <Layout title="AfroHub | Ticket Confirmation">
       <div className="max-w-4xl mx-auto px-4 py-12" style={{ paddingTop: 80 }}>
-        <ConfirmationSuccess />
+               <EventSummary 
+          event={event}
+          ticketCount={ticketCount}
+        />
+        
+         <ConfirmationSuccess />
         
         <TicketInfo 
           ticketCount={ticketCount}
@@ -229,10 +234,7 @@ export default function TicketConfirmation() {
           confirmationNumber={confirmationNumber}
         />
         
-        <EventSummary 
-          event={event}
-          ticketCount={ticketCount}
-        />
+
         
         <ActionButtons 
           onPrint={handlePrint}
