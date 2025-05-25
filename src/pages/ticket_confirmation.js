@@ -75,12 +75,12 @@ const EventSummary = ({ event, ticketCount }) => {
       <SectionHeader icon={CalendarIcon} title="Event Details" />
       <div className="flex space-x-4">
         <Image
-          src={event.image.startsWith('http') ? event.image : `/images/${event.image}`}
-          alt={event.title}
-          width={120}
-          height={120}
-          className="rounded-lg object-cover flex-shrink-0"
-        />
+      src={event.image.startsWith('http') ? event.image : `/images/${event.image}`}
+      alt={event.title}
+      width={700}
+      height={700}
+      className="rounded-[12px] shadow-md object-cover w-full h-auto"
+      />
         <div className="flex-grow">
           <h3 className="font-bold text-xl text-gray-900 mb-2">{event.title}</h3>
           <div className="space-y-2 text-sm text-gray-600">
