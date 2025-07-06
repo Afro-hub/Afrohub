@@ -1,10 +1,9 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Calendar, 
   MapPin, 
   Share2,
   Ticket,
-  User,
   Copy,
   Printer,
   ArrowLeft,
@@ -12,7 +11,7 @@ import {
   Mail
 } from 'lucide-react';
 
-export default function TicketConfirmation() {
+const TicketConfirmation = () => {
   const [event, setEvent] = useState({
     title: "",
     date: "",
@@ -25,7 +24,7 @@ export default function TicketConfirmation() {
 
   const [orderDetails, setOrderDetails] = useState({
     confirmationNumber: "",
-    date: new Date().toLocaleDateString(),
+    date: "",
     buyerName: "",
     userEmail: "",
     ticketCount: 0,
@@ -36,74 +35,88 @@ export default function TicketConfirmation() {
   });
 
   const [copied, setCopied] = useState(false);
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    // Check if we're in browser environment
-    if (typeof window === 'undefined') return;
-    
-    try {
-      // Get URL parameters
-      const urlParams = new URLSearchParams(window.location.search);
-      
-      const eventId = urlParams.get('eventId') || '';
-      const ticketCount = parseInt(urlParams.get('ticketCount') || '0');
-      const buyerName = urlParams.get('buyerName') ? decodeURIComponent(urlParams.get('buyerName')) : '';
-      const title = urlParams.get('title') ? decodeURIComponent(urlParams.get('title')) : '';
-      const date = urlParams.get('date') || '';
-      const time = urlParams.get('time') || '';
-      const location = urlParams.get('location') ? decodeURIComponent(urlParams.get('location')) : '';
-      const image = urlParams.get('image') || '';
-      const theme = urlParams.get('theme') ? decodeURIComponent(urlParams.get('theme')) : '';
-      const pricePerUnit = parseFloat(urlParams.get('pricePerUnit') || '0');
-      const confirmationNumber = urlParams.get('confirmationNumber') || '';
-
-      // Calculate pricing
-      const subtotal = pricePerUnit * ticketCount;
-      const serviceFee = subtotal * 0.05; // 5% service fee
-      const total = subtotal + serviceFee;
-
-      // Create items array
-      const items = Array.from({ length: ticketCount }, () => ({
-        name: "General Admission",
-        price: pricePerUnit
-      }));
-
-      // Update event state
-      setEvent({
-        title,
-        date,
-        time,
-        location,
-        image,
-        theme,
-        pricePerUnit: pricePerUnit.toString()
-      });
-
-      // Update order details
-      setOrderDetails({
-        confirmationNumber,
-        date: new Date().toLocaleDateString(),
-        buyerName,
-        userEmail: "", // Not provided in URL params
-        ticketCount,
-        items,
-        subtotal,
-        serviceFee,
-        total
-      });
-    } catch (error) {
-      console.error('Error parsing URL parameters:', error);
-    }
+    setIsClient(true);
   }, []);
 
+  useEffect(() => {
+    if (!isClient) return;
+    
+    const parseUrlParams = () => {
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        
+        const ticketCount = parseInt(urlParams.get('ticketCount') || '0', 10);
+        const buyerName = urlParams.get('buyerName') || '';
+        const title = urlParams.get('title') || '';
+        const date = urlParams.get('date') || '';
+        const time = urlParams.get('time') || '';
+        const location = urlParams.get('location') || '';
+        const image = urlParams.get('image') || '';
+        const theme = urlParams.get('theme') || '';
+        const pricePerUnit = parseFloat(urlParams.get('pricePerUnit') || '0');
+        const confirmationNumber = urlParams.get('confirmationNumber') || '';
+
+        // Decode URL components safely
+        const decodedBuyerName = buyerName ? decodeURIComponent(buyerName) : '';
+        const decodedTitle = title ? decodeURIComponent(title) : '';
+        const decodedLocation = location ? decodeURIComponent(location) : '';
+        const decodedTheme = theme ? decodeURIComponent(theme) : '';
+
+        // Calculate pricing
+        const subtotal = pricePerUnit * ticketCount;
+        const serviceFee = subtotal * 0.05;
+        const total = subtotal + serviceFee;
+
+        // Create items array
+        const items = [];
+        for (let i = 0; i < ticketCount; i++) {
+          items.push({
+            name: "General Admission",
+            price: pricePerUnit
+          });
+        }
+
+        // Update states
+        setEvent({
+          title: decodedTitle,
+          date: date,
+          time: time,
+          location: decodedLocation,
+          image: image,
+          theme: decodedTheme,
+          pricePerUnit: pricePerUnit.toString()
+        });
+
+        setOrderDetails({
+          confirmationNumber: confirmationNumber,
+          date: new Date().toLocaleDateString(),
+          buyerName: decodedBuyerName,
+          userEmail: "",
+          ticketCount: ticketCount,
+          items: items,
+          subtotal: subtotal,
+          serviceFee: serviceFee,
+          total: total
+        });
+      } catch (error) {
+        console.error('Error parsing URL parameters:', error);
+      }
+    };
+
+    parseUrlParams();
+  }, [isClient]);
+
   const handlePrint = () => {
-    if (typeof window !== 'undefined') {
+    if (isClient && window.print) {
       window.print();
     }
   };
 
   const handleShare = (platform) => {
-    if (typeof window === 'undefined') return;
+    if (!isClient) return;
     
     const shareText = `Check out this event: ${event.title}`;
     const shareUrl = window.location.href;
@@ -116,7 +129,7 @@ export default function TicketConfirmation() {
   };
 
   const copyConfirmationNumber = async () => {
-    if (typeof window === 'undefined' || !navigator.clipboard) return;
+    if (!isClient || !navigator.clipboard) return;
     
     try {
       await navigator.clipboard.writeText(orderDetails.confirmationNumber);
@@ -126,6 +139,10 @@ export default function TicketConfirmation() {
       console.error('Failed to copy confirmation number:', err);
     }
   };
+
+  if (!isClient) {
+    return <div className="min-h-screen bg-gray-50 flex items-center justify-center">Loading...</div>;
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -139,7 +156,9 @@ export default function TicketConfirmation() {
 
         {/* Greeting & Order Summary */}
         <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Hi {orderDetails.buyerName || 'Customer'}!</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+            Hi {orderDetails.buyerName || 'Customer'}!
+          </h2>
           <p className="text-gray-600 mb-4">
             Your order for <strong>{event.title || 'Event'}</strong> has been successfully processed. 
             Please see your ticket and order details below.
@@ -278,7 +297,9 @@ export default function TicketConfirmation() {
                 <div className="flex items-start">
                   <Ticket className="h-5 w-5 text-gray-500 mr-3 mt-0.5" />
                   <div>
-                    <p className="font-medium text-gray-900">{orderDetails.ticketCount} ticket{orderDetails.ticketCount > 1 ? 's' : ''}</p>
+                    <p className="font-medium text-gray-900">
+                      {orderDetails.ticketCount} ticket{orderDetails.ticketCount !== 1 ? 's' : ''}
+                    </p>
                   </div>
                 </div>
                 
@@ -365,4 +386,6 @@ export default function TicketConfirmation() {
       </div>
     </div>
   );
-}
+};
+
+export default TicketConfirmation;
