@@ -13,58 +13,81 @@ import {
 } from 'lucide-react';
 
 export default function TicketConfirmation() {
-  const [event, setEvent] = useState({});
-  const [orderDetails, setOrderDetails] = useState({});
-  const [isLoading, setIsLoading] = useState(true);
-  
+  const [event, setEvent] = useState({
+    title: "",
+    date: "",
+    time: "",
+    location: "",
+    image: "",
+    theme: "",
+    pricePerUnit: "0"
+  });
+
+  const [orderDetails, setOrderDetails] = useState({
+    confirmationNumber: "",
+    date: new Date().toLocaleDateString(),
+    buyerName: "",
+    userEmail: "",
+    ticketCount: 0,
+    items: [],
+    subtotal: 0,
+    serviceFee: 0,
+    total: 0
+  });
+
+  const [copied, setCopied] = useState(false);
+
   useEffect(() => {
     // Get URL parameters
     const urlParams = new URLSearchParams(window.location.search);
     
-    // Parse event details from URL parameters
-    const eventData = {
-      title: urlParams.get('title') || 'Event Title',
-      date: urlParams.get('date') || 'Date TBD',
-      time: urlParams.get('time') || 'Time TBD',
-      location: urlParams.get('location') || 'Location TBD',
-      address: urlParams.get('address') || '',
-      image: urlParams.get('image') || '/api/placeholder/400/200',
-      theme: urlParams.get('theme') || '',
-      pricePerUnit: urlParams.get('pricePerUnit') || '0'
-    };
-    
-    // Parse order details from URL parameters
-    const ticketCount = parseInt(urlParams.get('ticketCount') || '1');
-    const pricePerUnit = parseFloat(eventData.pricePerUnit);
+    const eventId = urlParams.get('eventId');
+    const ticketCount = parseInt(urlParams.get('ticketCount') || '0');
+    const buyerName = decodeURIComponent(urlParams.get('buyerName') || '');
+    const title = decodeURIComponent(urlParams.get('title') || '');
+    const date = urlParams.get('date') || '';
+    const time = urlParams.get('time') || '';
+    const location = decodeURIComponent(urlParams.get('location') || '');
+    const image = urlParams.get('image') || '';
+    const theme = decodeURIComponent(urlParams.get('theme') || '');
+    const pricePerUnit = parseFloat(urlParams.get('pricePerUnit') || '0');
+    const confirmationNumber = urlParams.get('confirmationNumber') || '';
+
+    // Calculate pricing
     const subtotal = pricePerUnit * ticketCount;
     const serviceFee = subtotal * 0.05; // 5% service fee
     const total = subtotal + serviceFee;
-    
-    const orderData = {
-      confirmationNumber: urlParams.get('confirmationNumber') || `TIX-${Date.now()}`,
-      date: new Date().toLocaleDateString('en-US', { 
-        year: 'numeric', 
-        month: 'short', 
-        day: '2-digit' 
-      }),
-      buyerName: urlParams.get('buyerName') || 'Guest',
-      userEmail: urlParams.get('userEmail') || '',
-      ticketCount: ticketCount,
-      items: Array(ticketCount).fill(null).map(() => ({
-        name: urlParams.get('ticketType') || 'General Admission',
-        price: pricePerUnit
-      })),
-      subtotal: subtotal,
-      serviceFee: serviceFee,
-      total: total
-    };
-    
-    setEvent(eventData);
-    setOrderDetails(orderData);
-    setIsLoading(false);
-  }, []);
 
-  const [copied, setCopied] = useState(false);
+    // Create items array
+    const items = Array.from({ length: ticketCount }, () => ({
+      name: "General Admission",
+      price: pricePerUnit
+    }));
+
+    // Update event state
+    setEvent({
+      title,
+      date,
+      time,
+      location,
+      image,
+      theme,
+      pricePerUnit: pricePerUnit.toString()
+    });
+
+    // Update order details
+    setOrderDetails({
+      confirmationNumber,
+      date: new Date().toLocaleDateString(),
+      buyerName,
+      userEmail: "", // Not provided in URL params
+      ticketCount,
+      items,
+      subtotal,
+      serviceFee,
+      total
+    });
+  }, []);
 
   const handlePrint = () => {
     window.print();
@@ -91,16 +114,7 @@ export default function TicketConfirmation() {
     }
   };
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-500 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading confirmation details...</p>
-        </div>
-      </div>
-    );
-  }
+  const totalPrice = parseFloat(event.pricePerUnit) * orderDetails.ticketCount;
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -195,24 +209,26 @@ export default function TicketConfirmation() {
             </div>
             <div className="md:col-span-2">
               <p className="text-sm text-gray-500 mb-1">Email Address</p>
-              <p className="font-bold text-lg text-gray-900">{orderDetails.userEmail}</p>
+              <p className="font-bold text-lg text-gray-900">{orderDetails.userEmail || 'Not provided'}</p>
             </div>
           </div>
         </div>
 
         {/* Email Confirmation Notice */}
-        <div className="bg-white rounded-lg shadow-sm p-6 mb-6 border-l-4 border-blue-500">
-          <div className="flex items-start space-x-3">
-            <Mail className="h-5 w-5 text-blue-500 mt-0.5 flex-shrink-0" />
-            <div>
-              <h3 className="font-bold text-blue-800 mb-1">Email Confirmation Sent</h3>
-              <p className="text-sm text-blue-700">
-                A confirmation email has been sent to <span className="font-semibold">{orderDetails.userEmail}</span>.
-                Please check your inbox and spam folder for your ticket details.
-              </p>
+        {orderDetails.userEmail && (
+          <div className="bg-white rounded-lg shadow-sm p-6 mb-6 border-l-4 border-blue-500">
+            <div className="flex items-start space-x-3">
+              <Mail className="h-5 w-5 text-blue-500 mt-0.5 flex-shrink-0" />
+              <div>
+                <h3 className="font-bold text-blue-800 mb-1">Email Confirmation Sent</h3>
+                <p className="text-sm text-blue-700">
+                  A confirmation email has been sent to <span className="font-semibold">{orderDetails.userEmail}</span>.
+                  Please check your inbox and spam folder for your ticket details.
+                </p>
+              </div>
             </div>
           </div>
-        </div>
+        )}
         
         {/* Event Details */}
         <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
@@ -240,7 +256,6 @@ export default function TicketConfirmation() {
                   <MapPin className="h-5 w-5 text-gray-500 mr-3 mt-0.5" />
                   <div>
                     <p className="font-medium text-gray-900">{event.location}</p>
-                    <p className="text-sm text-gray-600">{event.address}</p>
                   </div>
                 </div>
                 
