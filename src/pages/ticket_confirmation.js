@@ -1,56 +1,89 @@
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
-import Image from 'next/image';
-import Layout from '../components/Layout';
-import styles from '../styles/Contact.module.css';
+import { 
+  Calendar, 
+  MapPin, 
+  Share2,
+  Ticket,
+  User,
+  Copy,
+  Printer,
+  ArrowLeft,
+  CheckCircle,
+  Mail
+} from 'lucide-react';
 
-import Head from 'next/head';
-import {
-  CheckCircleIcon,
-  ArrowLeftIcon,
-  TicketIcon,
-  UserIcon,
-  CalendarIcon,
-  MapPinIcon,
-  PrinterIcon,
-  ShareIcon,
-  ExclamationTriangleIcon,
-  DocumentDuplicateIcon,
-  EnvelopeIcon,
-} from '@heroicons/react/24/outline';
+export default function TicketConfirmation() {
+  const [event, setEvent] = useState({});
+  const [orderDetails, setOrderDetails] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
+  
+  useEffect(() => {
+    // Get URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    
+    // Parse event details from URL parameters
+    const eventData = {
+      title: urlParams.get('title') || 'Event Title',
+      date: urlParams.get('date') || 'Date TBD',
+      time: urlParams.get('time') || 'Time TBD',
+      location: urlParams.get('location') || 'Location TBD',
+      address: urlParams.get('address') || '',
+      image: urlParams.get('image') || '/api/placeholder/400/200',
+      theme: urlParams.get('theme') || '',
+      pricePerUnit: urlParams.get('pricePerUnit') || '0'
+    };
+    
+    // Parse order details from URL parameters
+    const ticketCount = parseInt(urlParams.get('ticketCount') || '1');
+    const pricePerUnit = parseFloat(eventData.pricePerUnit);
+    const subtotal = pricePerUnit * ticketCount;
+    const serviceFee = subtotal * 0.05; // 5% service fee
+    const total = subtotal + serviceFee;
+    
+    const orderData = {
+      confirmationNumber: urlParams.get('confirmationNumber') || `TIX-${Date.now()}`,
+      date: new Date().toLocaleDateString('en-US', { 
+        year: 'numeric', 
+        month: 'short', 
+        day: '2-digit' 
+      }),
+      buyerName: urlParams.get('buyerName') || 'Guest',
+      userEmail: urlParams.get('userEmail') || '',
+      ticketCount: ticketCount,
+      items: Array(ticketCount).fill(null).map(() => ({
+        name: urlParams.get('ticketType') || 'General Admission',
+        price: pricePerUnit
+      })),
+      subtotal: subtotal,
+      serviceFee: serviceFee,
+      total: total
+    };
+    
+    setEvent(eventData);
+    setOrderDetails(orderData);
+    setIsLoading(false);
+  }, []);
 
-const SectionCard = ({ children, className = '' }) => (
-  <div className={`bg-white rounded-xl shadow-sm p-5 mb-6 ${className}`}>{children}</div>
-);
-
-const SectionHeader = ({ icon: Icon, title }) => (
-  <div className="flex items-center mb-3">
-    {Icon && <Icon className="h-5 w-5 text-green-500 mr-2" />}
-    <h3 className="text-lg font-bold text-gray-800">{title}</h3>
-  </div>
-);
-
-const LoadingSpinner = () => (
-  <div className="flex flex-col justify-center items-center min-h-screen">
-    <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-green-500 mb-4"></div>
-    <span className="text-gray-500">Loading confirmation details...</span>
-  </div>
-);
-
-const ConfirmationSuccess = () => (
-  <div className="text-center mb-8">
-    <CheckCircleIcon className="h-16 w-16 text-green-500 mx-auto mb-4" />
-    <h1 className="text-3xl font-bold text-gray-900 mb-2">Booking Confirmed!</h1>
-    <p className="text-gray-600">Your ticket purchase has been successfully processed.</p>
-  </div>
-);
-
-const TicketInfo = ({ ticketCount, buyerName, confirmationNumber, userEmail }) => {
   const [copied, setCopied] = useState(false);
+
+  const handlePrint = () => {
+    window.print();
+  };
+
+  const handleShare = (platform) => {
+    const shareText = `Check out this event: ${event.title}`;
+    const shareUrl = window.location.href;
+    
+    if (platform === 'facebook') {
+      window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`);
+    } else if (platform === 'twitter') {
+      window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`);
+    }
+  };
 
   const copyConfirmationNumber = async () => {
     try {
-      await navigator.clipboard.writeText(confirmationNumber);
+      await navigator.clipboard.writeText(orderDetails.confirmationNumber);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
@@ -58,320 +91,211 @@ const TicketInfo = ({ ticketCount, buyerName, confirmationNumber, userEmail }) =
     }
   };
 
-  return (
-    <SectionCard className="border-l-4 border-green-500">
-      <SectionHeader icon={TicketIcon} title="Ticket Information" />
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <p className="text-sm text-gray-500 mb-1">Confirmation Number</p>
-          <div className="flex items-center gap-2">
-            <p className="font-bold text-lg text-gray-900">{confirmationNumber}</p>
-            <button
-              onClick={copyConfirmationNumber}
-              className="text-gray-400 hover:text-gray-600 transition-colors"
-              title="Copy confirmation number"
-            >
-              <DocumentDuplicateIcon className="h-4 w-4" />
-            </button>
-          </div>
-          {copied && <span className="text-xs text-green-600">Copied!</span>}
-        </div>
-        <div>
-          <p className="text-sm text-gray-500 mb-1">Number of Tickets</p>
-          <p className="font-bold text-lg text-gray-900">{ticketCount}</p>
-        </div>
-        <div>
-          <p className="text-sm text-gray-500 mb-1">Buyer Name</p>
-          <p className="font-bold text-lg text-gray-900">{buyerName}</p>
-        </div>
-        <div>
-          <p className="text-sm text-gray-500 mb-1">Purchase Date</p>
-          <p className="font-bold text-lg text-gray-900">{new Date().toLocaleDateString()}</p>
-        </div>
-        {userEmail && (
-          <div className="md:col-span-2">
-            <p className="text-sm text-gray-500 mb-1">Email Address</p>
-            <p className="font-bold text-lg text-gray-900">{userEmail}</p>
-          </div>
-        )}
-      </div>
-    </SectionCard>
-  );
-};
-
-const EventSummary = ({ event, ticketCount }) => {
-  const eventPrice = ['free', 'Free', '', '0', '0.0'].includes(event.pricePerUnit) ? '0' : event.pricePerUnit;
-  const totalPrice = eventPrice === '0' ? 0 : parseFloat(eventPrice) * parseInt(ticketCount);
-  
-  return (
-    <SectionCard>
-      <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
-        <div className="flex-shrink-0">
-          <Image
-            src={event.image.startsWith('http') ? event.image : `/images/${event.image}`}
-            alt={event.title}
-            width={200}
-            height={200}
-            className="rounded-[12px] shadow-md object-cover w-full md:w-48 h-48"
-          />
-        </div>
-        <div className="flex-grow">
-          <h3 className="font-bold text-xl text-gray-900 mb-2">{event.title}</h3>
-          <div className="space-y-2 text-sm text-gray-600">
-            <div className="flex items-center">
-              <CalendarIcon className="h-4 w-4 mr-2 flex-shrink-0" />
-              <span>{event.date} • {event.time}</span>
-            </div>
-            <div className="flex items-center">
-              <MapPinIcon className="h-4 w-4 mr-2 flex-shrink-0" />
-              <span>{event.location || 'Location TBD'}</span>
-            </div>
-            <div className="flex items-center">
-              <TicketIcon className="h-4 w-4 mr-2 flex-shrink-0" />
-              <span>{ticketCount} ticket{ticketCount > 1 ? 's' : ''}</span>
-            </div>
-            {event.theme && (
-              <div className="flex items-center">
-                <span className="h-4 w-4 mr-2 text-purple-500 flex-shrink-0">🎨</span>
-                <span>Theme: {event.theme}</span>
-              </div>
-            )}
-          </div>
-          <div className="mt-4 pt-4 border-t border-gray-200">
-            <div className="flex justify-between items-center">
-              <span className="font-semibold text-gray-900">Total Paid:</span>
-              <span className="font-bold text-xl text-green-600">
-                {totalPrice === 0 ? 'Free' : `$${totalPrice.toFixed(2)}`}
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </SectionCard>
-  );
-};
-
-const ActionButtons = ({ onPrint, onShare, onViewEvent, onBackToEvents }) => (
-  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-    <button
-      onClick={onPrint}
-      className="flex items-center justify-center bg-white border-2 border-gray-300 text-gray-700 font-semibold py-3 px-4 rounded-xl hover:bg-gray-50 transition-colors"
-    >
-      <PrinterIcon className="h-5 w-5 mr-2" />
-      Print Tickets
-    </button>
-    <button
-      onClick={onShare}
-      className="flex items-center justify-center bg-white border-2 border-gray-300 text-gray-700 font-semibold py-3 px-4 rounded-xl hover:bg-gray-50 transition-colors"
-    >
-      <ShareIcon className="h-5 w-5 mr-2" />
-      Share Event
-    </button>
-    <button
-      onClick={onViewEvent}
-      className="flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-xl transition-colors"
-    >
-      <TicketIcon className="h-5 w-5 mr-2" />
-      View Event
-    </button>
-    <button
-      onClick={onBackToEvents}
-      className="flex items-center justify-center bg-gray-600 hover:bg-gray-700 text-white font-semibold py-3 px-4 rounded-xl transition-colors"
-    >
-      <ArrowLeftIcon className="h-5 w-5 mr-2" />
-      Back to Events
-    </button>
-  </div>
-);
-
-const EmailConfirmationNotice = ({ userEmail }) => (
-  <SectionCard className="border-l-4 border-blue-500">
-    <div className="flex items-start space-x-3">
-      <EnvelopeIcon className="h-5 w-5 text-blue-500 mt-0.5 flex-shrink-0" />
-      <div>
-        <h3 className="font-bold text-blue-800 mb-1">Email Confirmation Sent</h3>
-        <p className="text-sm text-blue-700">
-          A confirmation email has been sent to <span className="font-semibold">{userEmail}</span>.
-          Please check your inbox and spam folder for your ticket details.
-        </p>
-      </div>
-    </div>
-  </SectionCard>
-);
-
-export default function TicketConfirmation() {
-  const router = useRouter();
-  const { 
-    eventId, 
-    ticketCount, 
-    buyerName, 
-    title, 
-    date, 
-    time, 
-    location, 
-    image, 
-    theme, 
-    pricePerUnit,
-    confirmationNumber,
-    userEmail 
-  } = router.query;
-  
-  const [event, setEvent] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    if (!eventId || !title) {
-      setIsLoading(false);
-      return;
-    }
-
-    try {
-      // Create event object from URL parameters
-      const eventData = {
-        id: eventId,
-        title: decodeURIComponent(title || ''),
-        date: decodeURIComponent(date || ''),
-        time: decodeURIComponent(time || ''),
-        location: decodeURIComponent(location || ''),
-        image: decodeURIComponent(image || ''),
-        theme: theme ? decodeURIComponent(theme) : '',
-        pricePerUnit: decodeURIComponent(pricePerUnit || '0')
-      };
-
-      setEvent(eventData);
-      setError(null);
-    } catch (err) {
-      console.error('Error parsing event data:', err);
-      setError('Failed to load event information');
-    } finally {
-      setIsLoading(false);
-    }
-  }, [eventId, title, date, time, location, image, theme, pricePerUnit, confirmationNumber]);
-
-  const handlePrint = () => {
-    window.print();
-  };
-
-  const handleShare = async () => {
-    if (!event) return;
-
-    const shareData = {
-      title: event.title,
-      text: `Check out this event: ${event.title}`,
-      url: `${window.location.origin}/ticket-details/${eventId}`,
-    };
-
-    try {
-      if (navigator.share) {
-        await navigator.share(shareData);
-      } else {
-        // Fallback for browsers that don't support Web Share API
-        await navigator.clipboard.writeText(shareData.url);
-        alert('Event link copied to clipboard!');
-      }
-    } catch (err) {
-      console.error('Error sharing:', err);
-      // Fallback to manual copy
-      try {
-        await navigator.clipboard.writeText(shareData.url);
-        alert('Event link copied to clipboard!');
-      } catch (clipboardErr) {
-        console.error('Clipboard failed:', clipboardErr);
-        alert('Unable to share. Please copy the URL manually.');
-      }
-    }
-  };
-
-  const handleViewEvent = () => {
-    router.push(`/ticket-details/${eventId}`);
-  };
-
-  const handleBackToEvents = () => {
-    router.push('/events');
-  };
-
-  if (isLoading) return <LoadingSpinner />;
-
-  if (error || !event || !ticketCount || !buyerName) {
+  if (isLoading) {
     return (
-      <Layout title="AfroHub | Ticket Confirmation">
-        <div className="min-h-screen flex items-center justify-center">
-          <div className="text-center max-w-md mx-auto px-4">
-            <ExclamationTriangleIcon className="h-16 w-16 text-red-500 mx-auto mb-4" />
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">
-              {error || 'Invalid Confirmation Link'}
-            </h2>
-            <p className="text-gray-600 mb-6">
-              {error || 'The confirmation details could not be found. Please check your email for the correct confirmation link.'}
-            </p>
-            <button
-              onClick={handleBackToEvents}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg transition-colors font-semibold"
-            >
-              Browse Events
-            </button>
-          </div>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-500 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading confirmation details...</p>
         </div>
-      </Layout>
+      </div>
     );
   }
 
   return (
-    <Layout title="AfroHub | Ticket Confirmation">
-      <Head>
-        <style jsx>{`
-          @media print {
-            body * {
-              visibility: hidden;
-            }
-            .print-section, .print-section * {
-              visibility: visible;
-            }
-            .print-section {
-              position: absolute;
-              left: 0;
-              top: 0;
-              width: 100%;
-            }
-            .no-print {
-              display: none !important;
-            }
-          }
-        `}</style>
-      </Head>
-      
-      <div className="max-w-4xl mx-auto px-4 py-12" style={{ paddingTop: 80 }}>
-        <div className="print-section">
-          <EventSummary 
-            event={event}
-            ticketCount={ticketCount}
-          />
+    <div className="min-h-screen bg-gray-50 py-8">
+      <div className="max-w-2xl mx-auto px-4">
+        {/* Success Header */}
+        <div className="text-center mb-8">
+          <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Booking Confirmed!</h1>
+          <p className="text-gray-600">Your ticket purchase has been successfully processed.</p>
+        </div>
+
+        {/* Greeting & Order Summary */}
+        <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Hi {orderDetails.buyerName}!</h2>
+          <p className="text-gray-600 mb-4">
+            Your order for <strong>{event.title}</strong> has been successfully processed. 
+            Please see your ticket and order details below.
+          </p>
           
-          <ConfirmationSuccess />
+          {/* Order Summary */}
+          <div className="bg-gray-50 rounded-lg p-4 mb-4">
+            <div className="flex justify-between items-center mb-4">
+              <div>
+                <p className="font-semibold text-gray-900">Order {orderDetails.confirmationNumber}</p>
+              </div>
+              <div className="text-right">
+                <p className="text-gray-600">{orderDetails.date}</p>
+              </div>
+            </div>
+            
+            {/* Items */}
+            <div className="space-y-2 mb-4">
+              {orderDetails.items.map((item, index) => (
+                <div key={index} className="flex justify-between">
+                  <span className="text-gray-700">{item.name}</span>
+                  <span className="text-gray-900">${item.price.toFixed(2)}</span>
+                </div>
+              ))}
+            </div>
+            
+            {/* Totals */}
+            <div className="border-t pt-4 space-y-1">
+              <div className="flex justify-between text-sm">
+                <span className="text-gray-600">Subtotal:</span>
+                <span className="text-gray-900">${orderDetails.subtotal.toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-gray-600">Service Fee:</span>
+                <span className="text-gray-900">${orderDetails.serviceFee.toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between font-semibold text-lg border-t pt-2">
+                <span className="text-gray-900">Total:</span>
+                <span className="text-green-600">${orderDetails.total.toFixed(2)}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Ticket Information */}
+        <div className="bg-white rounded-lg shadow-sm p-6 mb-6 border-l-4 border-green-500">
+          <div className="flex items-center mb-4">
+            <Ticket className="h-5 w-5 text-green-500 mr-2" />
+            <h3 className="text-lg font-bold text-gray-900">Ticket Information</h3>
+          </div>
           
-          <TicketInfo 
-            ticketCount={ticketCount}
-            buyerName={buyerName}
-            confirmationNumber={confirmationNumber}
-            userEmail={userEmail}
-          />
-          
-          {userEmail && (
-            <EmailConfirmationNotice userEmail={userEmail} />
-          )}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <p className="text-sm text-gray-500 mb-1">Confirmation Number</p>
+              <div className="flex items-center gap-2">
+                <p className="font-bold text-lg text-gray-900">{orderDetails.confirmationNumber}</p>
+                <button
+                  onClick={copyConfirmationNumber}
+                  className="text-gray-400 hover:text-gray-600 transition-colors"
+                  title="Copy confirmation number"
+                >
+                  <Copy className="h-4 w-4" />
+                </button>
+              </div>
+              {copied && <span className="text-xs text-green-600">Copied!</span>}
+            </div>
+            <div>
+              <p className="text-sm text-gray-500 mb-1">Number of Tickets</p>
+              <p className="font-bold text-lg text-gray-900">{orderDetails.ticketCount}</p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-500 mb-1">Buyer Name</p>
+              <p className="font-bold text-lg text-gray-900">{orderDetails.buyerName}</p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-500 mb-1">Purchase Date</p>
+              <p className="font-bold text-lg text-gray-900">{orderDetails.date}</p>
+            </div>
+            <div className="md:col-span-2">
+              <p className="text-sm text-gray-500 mb-1">Email Address</p>
+              <p className="font-bold text-lg text-gray-900">{orderDetails.userEmail}</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Email Confirmation Notice */}
+        <div className="bg-white rounded-lg shadow-sm p-6 mb-6 border-l-4 border-blue-500">
+          <div className="flex items-start space-x-3">
+            <Mail className="h-5 w-5 text-blue-500 mt-0.5 flex-shrink-0" />
+            <div>
+              <h3 className="font-bold text-blue-800 mb-1">Email Confirmation Sent</h3>
+              <p className="text-sm text-blue-700">
+                A confirmation email has been sent to <span className="font-semibold">{orderDetails.userEmail}</span>.
+                Please check your inbox and spam folder for your ticket details.
+              </p>
+            </div>
+          </div>
         </div>
         
-        <div className="no-print">
-          <ActionButtons 
-            onPrint={handlePrint}
-            onShare={handleShare}
-            onViewEvent={handleViewEvent}
-            onBackToEvents={handleBackToEvents}
-          />
+        {/* Event Details */}
+        <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
+          <h3 className="text-xl font-bold text-gray-900 mb-4">{event.title}</h3>
+          
+          <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
+            <div className="flex-shrink-0">
+              <img
+                src={event.image}
+                alt={event.title}
+                className="rounded-lg shadow-md object-cover w-full md:w-48 h-48"
+              />
+            </div>
+            <div className="flex-grow">
+              <div className="space-y-3">
+                <div className="flex items-start">
+                  <Calendar className="h-5 w-5 text-gray-500 mr-3 mt-0.5" />
+                  <div>
+                    <p className="font-medium text-gray-900">{event.date}</p>
+                    <p className="text-sm text-gray-600">{event.time}</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-start">
+                  <MapPin className="h-5 w-5 text-gray-500 mr-3 mt-0.5" />
+                  <div>
+                    <p className="font-medium text-gray-900">{event.location}</p>
+                    <p className="text-sm text-gray-600">{event.address}</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-start">
+                  <Ticket className="h-5 w-5 text-gray-500 mr-3 mt-0.5" />
+                  <div>
+                    <p className="font-medium text-gray-900">{orderDetails.ticketCount} ticket{orderDetails.ticketCount > 1 ? 's' : ''}</p>
+                  </div>
+                </div>
+                
+                {event.theme && (
+                  <div className="flex items-start">
+                    <span className="text-purple-500 mr-3 mt-0.5">🎨</span>
+                    <div>
+                      <p className="font-medium text-gray-900">Theme: {event.theme}</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <button
+            onClick={handlePrint}
+            className="flex items-center justify-center bg-white border-2 border-gray-300 text-gray-700 font-semibold py-3 px-4 rounded-lg hover:bg-gray-50 transition-colors"
+          >
+            <Printer className="h-5 w-5 mr-2" />
+            Print Tickets
+          </button>
+          <button
+            onClick={() => handleShare('facebook')}
+            className="flex items-center justify-center bg-white border-2 border-gray-300 text-gray-700 font-semibold py-3 px-4 rounded-lg hover:bg-gray-50 transition-colors"
+          >
+            <Share2 className="h-5 w-5 mr-2" />
+            Share Event
+          </button>
+          <button
+            className="flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors"
+          >
+            <Ticket className="h-5 w-5 mr-2" />
+            View Event
+          </button>
+          <button
+            className="flex items-center justify-center bg-gray-600 hover:bg-gray-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors"
+          >
+            <ArrowLeft className="h-5 w-5 mr-2" />
+            Back to Events
+          </button>
         </div>
         
-        <div className="mt-8 p-6 bg-green-50 rounded-xl border border-green-200">
+        {/* Important Information */}
+        <div className="bg-green-50 rounded-lg p-6 border border-green-200 mb-6">
           <h3 className="font-bold text-green-800 mb-2">Important Information</h3>
           <ul className="text-sm text-green-700 space-y-1">
             <li>• Please save this confirmation for your records</li>
@@ -381,7 +305,33 @@ export default function TicketConfirmation() {
             <li>• Check your email for additional event updates</li>
           </ul>
         </div>
+        
+        {/* Footer */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="bg-white rounded-lg shadow-sm p-6">
+            <h4 className="font-semibold text-gray-900 mb-3">Need help?</h4>
+            <p className="text-sm text-gray-600 mb-3">
+              AfroHub is using our ticketing platform to sell and 
+              manage tickets for this event. If you have any questions, please contact{' '}
+              <a href="#" className="text-blue-600 hover:text-blue-800">AfroHub Support</a>.
+            </p>
+          </div>
+          
+          <div className="bg-white rounded-lg shadow-sm p-6">
+            <h4 className="font-semibold text-gray-900 mb-3">Create your own event</h4>
+            <p className="text-sm text-gray-600 mb-3">
+              Anybody can sell and manage tickets using our platform.{' '}
+              <a href="#" className="text-blue-600 hover:text-blue-800">Learn more</a>
+            </p>
+          </div>
+        </div>
+        
+        <div className="mt-6 text-center">
+          <p className="text-xs text-gray-500">
+            Email footer is managed by the platform settings.
+          </p>
+        </div>
       </div>
-    </Layout>
+    </div>
   );
 }
