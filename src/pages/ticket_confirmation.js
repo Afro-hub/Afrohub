@@ -1,17 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  Calendar, 
-  MapPin, 
-  Share2,
-  Ticket,
-  Copy,
-  Printer,
-  ArrowLeft,
-  CheckCircle,
-  Mail
-} from 'lucide-react';
+import { useState, useEffect } from 'react';
 
-const TicketConfirmation = () => {
+export default function TicketConfirmation() {
   const [event, setEvent] = useState({
     title: "",
     date: "",
@@ -24,7 +13,7 @@ const TicketConfirmation = () => {
 
   const [orderDetails, setOrderDetails] = useState({
     confirmationNumber: "",
-    date: "",
+    date: new Date().toLocaleDateString(),
     buyerName: "",
     userEmail: "",
     ticketCount: 0,
@@ -35,88 +24,74 @@ const TicketConfirmation = () => {
   });
 
   const [copied, setCopied] = useState(false);
-  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    setIsClient(true);
+    // Check if we're in browser environment
+    if (typeof window === 'undefined') return;
+    
+    try {
+      // Get URL parameters
+      const urlParams = new URLSearchParams(window.location.search);
+      
+      const eventId = urlParams.get('eventId') || '';
+      const ticketCount = parseInt(urlParams.get('ticketCount') || '0');
+      const buyerName = urlParams.get('buyerName') ? decodeURIComponent(urlParams.get('buyerName')) : '';
+      const title = urlParams.get('title') ? decodeURIComponent(urlParams.get('title')) : '';
+      const date = urlParams.get('date') || '';
+      const time = urlParams.get('time') || '';
+      const location = urlParams.get('location') ? decodeURIComponent(urlParams.get('location')) : '';
+      const image = urlParams.get('image') || '';
+      const theme = urlParams.get('theme') ? decodeURIComponent(urlParams.get('theme')) : '';
+      const pricePerUnit = parseFloat(urlParams.get('pricePerUnit') || '0');
+      const confirmationNumber = urlParams.get('confirmationNumber') || '';
+
+      // Calculate pricing
+      const subtotal = pricePerUnit * ticketCount;
+      const serviceFee = subtotal * 0.05; // 5% service fee
+      const total = subtotal + serviceFee;
+
+      // Create items array
+      const items = Array.from({ length: ticketCount }, () => ({
+        name: "General Admission",
+        price: pricePerUnit
+      }));
+
+      // Update event state
+      setEvent({
+        title,
+        date,
+        time,
+        location,
+        image,
+        theme,
+        pricePerUnit: pricePerUnit.toString()
+      });
+
+      // Update order details
+      setOrderDetails({
+        confirmationNumber,
+        date: new Date().toLocaleDateString(),
+        buyerName,
+        userEmail: "", // Not provided in URL params
+        ticketCount,
+        items,
+        subtotal,
+        serviceFee,
+        total
+      });
+    } catch (error) {
+      console.error('Error parsing URL parameters:', error);
+    }
   }, []);
 
-  useEffect(() => {
-    if (!isClient) return;
-    
-    const parseUrlParams = () => {
-      try {
-        const urlParams = new URLSearchParams(window.location.search);
-        
-        const ticketCount = parseInt(urlParams.get('ticketCount') || '0', 10);
-        const buyerName = urlParams.get('buyerName') || '';
-        const title = urlParams.get('title') || '';
-        const date = urlParams.get('date') || '';
-        const time = urlParams.get('time') || '';
-        const location = urlParams.get('location') || '';
-        const image = urlParams.get('image') || '';
-        const theme = urlParams.get('theme') || '';
-        const pricePerUnit = parseFloat(urlParams.get('pricePerUnit') || '0');
-        const confirmationNumber = urlParams.get('confirmationNumber') || '';
-
-        // Decode URL components safely
-        const decodedBuyerName = buyerName ? decodeURIComponent(buyerName) : '';
-        const decodedTitle = title ? decodeURIComponent(title) : '';
-        const decodedLocation = location ? decodeURIComponent(location) : '';
-        const decodedTheme = theme ? decodeURIComponent(theme) : '';
-
-        // Calculate pricing
-        const subtotal = pricePerUnit * ticketCount;
-        const serviceFee = subtotal * 0.05;
-        const total = subtotal + serviceFee;
-
-        // Create items array
-        const items = [];
-        for (let i = 0; i < ticketCount; i++) {
-          items.push({
-            name: "General Admission",
-            price: pricePerUnit
-          });
-        }
-
-        // Update states
-        setEvent({
-          title: decodedTitle,
-          date: date,
-          time: time,
-          location: decodedLocation,
-          image: image,
-          theme: decodedTheme,
-          pricePerUnit: pricePerUnit.toString()
-        });
-
-        setOrderDetails({
-          confirmationNumber: confirmationNumber,
-          date: new Date().toLocaleDateString(),
-          buyerName: decodedBuyerName,
-          userEmail: "",
-          ticketCount: ticketCount,
-          items: items,
-          subtotal: subtotal,
-          serviceFee: serviceFee,
-          total: total
-        });
-      } catch (error) {
-        console.error('Error parsing URL parameters:', error);
-      }
-    };
-
-    parseUrlParams();
-  }, [isClient]);
-
   const handlePrint = () => {
-    if (isClient && window.print) {
+    if (typeof window !== 'undefined') {
       window.print();
     }
   };
 
   const handleShare = (platform) => {
-    if (!isClient) return;
+    if (typeof window === 'undefined') return;
     
     const shareText = `Check out this event: ${event.title}`;
     const shareUrl = window.location.href;
@@ -129,7 +104,7 @@ const TicketConfirmation = () => {
   };
 
   const copyConfirmationNumber = async () => {
-    if (!isClient || !navigator.clipboard) return;
+    if (typeof window === 'undefined' || !navigator.clipboard) return;
     
     try {
       await navigator.clipboard.writeText(orderDetails.confirmationNumber);
@@ -140,25 +115,21 @@ const TicketConfirmation = () => {
     }
   };
 
-  if (!isClient) {
-    return <div className="min-h-screen bg-gray-50 flex items-center justify-center">Loading...</div>;
-  }
-
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-2xl mx-auto px-4">
         {/* Success Header */}
         <div className="text-center mb-8">
-          <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
+          <div className="h-16 w-16 mx-auto mb-4 bg-green-500 rounded-full flex items-center justify-center">
+            <span className="text-white text-2xl">✓</span>
+          </div>
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Booking Confirmed!</h1>
           <p className="text-gray-600">Your ticket purchase has been successfully processed.</p>
         </div>
 
         {/* Greeting & Order Summary */}
         <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">
-            Hi {orderDetails.buyerName || 'Customer'}!
-          </h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Hi {orderDetails.buyerName || 'Customer'}!</h2>
           <p className="text-gray-600 mb-4">
             Your order for <strong>{event.title || 'Event'}</strong> has been successfully processed. 
             Please see your ticket and order details below.
@@ -206,7 +177,7 @@ const TicketConfirmation = () => {
         {/* Ticket Information */}
         <div className="bg-white rounded-lg shadow-sm p-6 mb-6 border-l-4 border-green-500">
           <div className="flex items-center mb-4">
-            <Ticket className="h-5 w-5 text-green-500 mr-2" />
+            <span className="text-green-500 mr-2">🎫</span>
             <h3 className="text-lg font-bold text-gray-900">Ticket Information</h3>
           </div>
           
@@ -217,10 +188,10 @@ const TicketConfirmation = () => {
                 <p className="font-bold text-lg text-gray-900">{orderDetails.confirmationNumber}</p>
                 <button
                   onClick={copyConfirmationNumber}
-                  className="text-gray-400 hover:text-gray-600 transition-colors"
+                  className="text-gray-400 hover:text-gray-600 transition-colors px-2 py-1 text-sm"
                   title="Copy confirmation number"
                 >
-                  <Copy className="h-4 w-4" />
+                  📋
                 </button>
               </div>
               {copied && <span className="text-xs text-green-600">Copied!</span>}
@@ -248,7 +219,7 @@ const TicketConfirmation = () => {
         {orderDetails.userEmail && (
           <div className="bg-white rounded-lg shadow-sm p-6 mb-6 border-l-4 border-blue-500">
             <div className="flex items-start space-x-3">
-              <Mail className="h-5 w-5 text-blue-500 mt-0.5 flex-shrink-0" />
+              <span className="text-blue-500 mt-0.5 flex-shrink-0">✉️</span>
               <div>
                 <h3 className="font-bold text-blue-800 mb-1">Email Confirmation Sent</h3>
                 <p className="text-sm text-blue-700">
@@ -280,7 +251,7 @@ const TicketConfirmation = () => {
             <div className="flex-grow">
               <div className="space-y-3">
                 <div className="flex items-start">
-                  <Calendar className="h-5 w-5 text-gray-500 mr-3 mt-0.5" />
+                  <span className="text-gray-500 mr-3 mt-0.5">📅</span>
                   <div>
                     <p className="font-medium text-gray-900">{event.date}</p>
                     <p className="text-sm text-gray-600">{event.time}</p>
@@ -288,18 +259,16 @@ const TicketConfirmation = () => {
                 </div>
                 
                 <div className="flex items-start">
-                  <MapPin className="h-5 w-5 text-gray-500 mr-3 mt-0.5" />
+                  <span className="text-gray-500 mr-3 mt-0.5">📍</span>
                   <div>
                     <p className="font-medium text-gray-900">{event.location}</p>
                   </div>
                 </div>
                 
                 <div className="flex items-start">
-                  <Ticket className="h-5 w-5 text-gray-500 mr-3 mt-0.5" />
+                  <span className="text-gray-500 mr-3 mt-0.5">🎫</span>
                   <div>
-                    <p className="font-medium text-gray-900">
-                      {orderDetails.ticketCount} ticket{orderDetails.ticketCount !== 1 ? 's' : ''}
-                    </p>
+                    <p className="font-medium text-gray-900">{orderDetails.ticketCount} ticket{orderDetails.ticketCount > 1 ? 's' : ''}</p>
                   </div>
                 </div>
                 
@@ -322,26 +291,26 @@ const TicketConfirmation = () => {
             onClick={handlePrint}
             className="flex items-center justify-center bg-white border-2 border-gray-300 text-gray-700 font-semibold py-3 px-4 rounded-lg hover:bg-gray-50 transition-colors"
           >
-            <Printer className="h-5 w-5 mr-2" />
+            <span className="mr-2">🖨️</span>
             Print Tickets
           </button>
           <button
             onClick={() => handleShare('facebook')}
             className="flex items-center justify-center bg-white border-2 border-gray-300 text-gray-700 font-semibold py-3 px-4 rounded-lg hover:bg-gray-50 transition-colors"
           >
-            <Share2 className="h-5 w-5 mr-2" />
+            <span className="mr-2">📤</span>
             Share Event
           </button>
           <button
             className="flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors"
           >
-            <Ticket className="h-5 w-5 mr-2" />
+            <span className="mr-2">🎫</span>
             View Event
           </button>
           <button
             className="flex items-center justify-center bg-gray-600 hover:bg-gray-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors"
           >
-            <ArrowLeft className="h-5 w-5 mr-2" />
+            <span className="mr-2">←</span>
             Back to Events
           </button>
         </div>
@@ -386,6 +355,4 @@ const TicketConfirmation = () => {
       </div>
     </div>
   );
-};
-
-export default TicketConfirmation;
+}
