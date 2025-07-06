@@ -38,62 +38,73 @@ export default function TicketConfirmation() {
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
-    // Get URL parameters
-    const urlParams = new URLSearchParams(window.location.search);
+    // Check if we're in browser environment
+    if (typeof window === 'undefined') return;
     
-    const eventId = urlParams.get('eventId');
-    const ticketCount = parseInt(urlParams.get('ticketCount') || '0');
-    const buyerName = decodeURIComponent(urlParams.get('buyerName') || '');
-    const title = decodeURIComponent(urlParams.get('title') || '');
-    const date = urlParams.get('date') || '';
-    const time = urlParams.get('time') || '';
-    const location = decodeURIComponent(urlParams.get('location') || '');
-    const image = urlParams.get('image') || '';
-    const theme = decodeURIComponent(urlParams.get('theme') || '');
-    const pricePerUnit = parseFloat(urlParams.get('pricePerUnit') || '0');
-    const confirmationNumber = urlParams.get('confirmationNumber') || '';
+    try {
+      // Get URL parameters
+      const urlParams = new URLSearchParams(window.location.search);
+      
+      const eventId = urlParams.get('eventId') || '';
+      const ticketCount = parseInt(urlParams.get('ticketCount') || '0');
+      const buyerName = urlParams.get('buyerName') ? decodeURIComponent(urlParams.get('buyerName')) : '';
+      const title = urlParams.get('title') ? decodeURIComponent(urlParams.get('title')) : '';
+      const date = urlParams.get('date') || '';
+      const time = urlParams.get('time') || '';
+      const location = urlParams.get('location') ? decodeURIComponent(urlParams.get('location')) : '';
+      const image = urlParams.get('image') || '';
+      const theme = urlParams.get('theme') ? decodeURIComponent(urlParams.get('theme')) : '';
+      const pricePerUnit = parseFloat(urlParams.get('pricePerUnit') || '0');
+      const confirmationNumber = urlParams.get('confirmationNumber') || '';
 
-    // Calculate pricing
-    const subtotal = pricePerUnit * ticketCount;
-    const serviceFee = subtotal * 0.05; // 5% service fee
-    const total = subtotal + serviceFee;
+      // Calculate pricing
+      const subtotal = pricePerUnit * ticketCount;
+      const serviceFee = subtotal * 0.05; // 5% service fee
+      const total = subtotal + serviceFee;
 
-    // Create items array
-    const items = Array.from({ length: ticketCount }, () => ({
-      name: "General Admission",
-      price: pricePerUnit
-    }));
+      // Create items array
+      const items = Array.from({ length: ticketCount }, () => ({
+        name: "General Admission",
+        price: pricePerUnit
+      }));
 
-    // Update event state
-    setEvent({
-      title,
-      date,
-      time,
-      location,
-      image,
-      theme,
-      pricePerUnit: pricePerUnit.toString()
-    });
+      // Update event state
+      setEvent({
+        title,
+        date,
+        time,
+        location,
+        image,
+        theme,
+        pricePerUnit: pricePerUnit.toString()
+      });
 
-    // Update order details
-    setOrderDetails({
-      confirmationNumber,
-      date: new Date().toLocaleDateString(),
-      buyerName,
-      userEmail: "", // Not provided in URL params
-      ticketCount,
-      items,
-      subtotal,
-      serviceFee,
-      total
-    });
+      // Update order details
+      setOrderDetails({
+        confirmationNumber,
+        date: new Date().toLocaleDateString(),
+        buyerName,
+        userEmail: "", // Not provided in URL params
+        ticketCount,
+        items,
+        subtotal,
+        serviceFee,
+        total
+      });
+    } catch (error) {
+      console.error('Error parsing URL parameters:', error);
+    }
   }, []);
 
   const handlePrint = () => {
-    window.print();
+    if (typeof window !== 'undefined') {
+      window.print();
+    }
   };
 
   const handleShare = (platform) => {
+    if (typeof window === 'undefined') return;
+    
     const shareText = `Check out this event: ${event.title}`;
     const shareUrl = window.location.href;
     
@@ -105,6 +116,8 @@ export default function TicketConfirmation() {
   };
 
   const copyConfirmationNumber = async () => {
+    if (typeof window === 'undefined' || !navigator.clipboard) return;
+    
     try {
       await navigator.clipboard.writeText(orderDetails.confirmationNumber);
       setCopied(true);
@@ -113,8 +126,6 @@ export default function TicketConfirmation() {
       console.error('Failed to copy confirmation number:', err);
     }
   };
-
-  const totalPrice = parseFloat(event.pricePerUnit) * orderDetails.ticketCount;
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -128,9 +139,9 @@ export default function TicketConfirmation() {
 
         {/* Greeting & Order Summary */}
         <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Hi {orderDetails.buyerName}!</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Hi {orderDetails.buyerName || 'Customer'}!</h2>
           <p className="text-gray-600 mb-4">
-            Your order for <strong>{event.title}</strong> has been successfully processed. 
+            Your order for <strong>{event.title || 'Event'}</strong> has been successfully processed. 
             Please see your ticket and order details below.
           </p>
           
@@ -236,11 +247,16 @@ export default function TicketConfirmation() {
           
           <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
             <div className="flex-shrink-0">
-              <img
-                src={event.image}
-                alt={event.title}
-                className="rounded-lg shadow-md object-cover w-full md:w-48 h-48"
-              />
+              {event.image && (
+                <img
+                  src={event.image}
+                  alt={event.title}
+                  className="rounded-lg shadow-md object-cover w-full md:w-48 h-48"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                  }}
+                />
+              )}
             </div>
             <div className="flex-grow">
               <div className="space-y-3">
