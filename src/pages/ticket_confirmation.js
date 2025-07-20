@@ -247,7 +247,7 @@ export default function TicketConfirmation() {
           <Link href="/">
             <a className={styles.homeLink}>← Back to Home</a>
           </Link>
-          <Link href="/events">
+          <Link href="/download">
             <a className={styles.eventsLink}>Browse More Events →</a>
           </Link>
         </motion.div>
