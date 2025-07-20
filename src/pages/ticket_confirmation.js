@@ -195,7 +195,7 @@ export default function TicketConfirmation() {
               </div>
               <div className={styles.totalAmount}>
                 <span className={styles.amountLabel}>Total</span>
-                <span className={styles.amountValue}>₦{totalAmount.toLocaleString()}</span>
+                <span className={styles.amountValue}>${totalAmount.toLocaleString()}</span>
               </div>
             </div>
 
