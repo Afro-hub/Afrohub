@@ -70,7 +70,7 @@ export default function TicketConfirmation() {
     });
   };
 
-  const totalAmount = ticketData.pricePerUnit;
+  const totalAmount = ticketData ? ticketData.pricePerUnit : 0;
 
   const fadeInUp = {
     hidden: { opacity: 0, y: 30 },
@@ -160,7 +160,7 @@ export default function TicketConfirmation() {
               <div className={styles.eventInfo}>
                 <h2>{ticketData.title}</h2>
                 {ticketData.theme && (
-                  <span className={styles.theme}>Theme: {ticketData.theme}</span>
+                  <span className={styles.theme}>{ticketData.theme} Theme</span>
                 )}
               </div>
             </div>
@@ -219,6 +219,36 @@ export default function TicketConfirmation() {
           </div>
         </motion.div>
 
+        {/* Action Buttons */}
+        <motion.div
+          className={styles.actionButtons}
+          initial="hidden"
+          animate="visible"
+          variants={fadeInUp}
+          transition={{ delay: 0.5 }}
+        >
+          <button 
+            className={styles.downloadButton}
+            onClick={() => window.print()}
+          >
+            📄 Download/Print Ticket
+          </button>
+          <button 
+            className={styles.shareButton}
+            onClick={() => {
+              if (navigator.share) {
+                navigator.share({
+                  title: `${ticketData.title} - Ticket Confirmation`,
+                  text: `I'm going to ${ticketData.title}!`,
+                  url: window.location.href
+                });
+              }
+            }}
+          >
+            📱 Share
+          </button>
+        </motion.div>
+
         {/* Additional Info */}
         <motion.div
           className={styles.additionalInfo}
@@ -247,7 +277,7 @@ export default function TicketConfirmation() {
           <Link href="/">
             <a className={styles.homeLink}>← Back to Home</a>
           </Link>
-          <Link href="/download">
+          <Link href="/events">
             <a className={styles.eventsLink}>Browse More Events →</a>
           </Link>
         </motion.div>
