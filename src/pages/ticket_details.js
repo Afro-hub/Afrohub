@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 import Layout from '../components/Layout';
-import styles from '../styles/Contact.module.css';
+import styles from '../styles/TicketConfirmation.module.css';
 
 import Head from 'next/head';
 import {
@@ -24,8 +24,8 @@ const SectionHeader = ({ icon: Icon, title }) => (
 );
 
 const LoadingSpinner = () => (
-  <div className="flex flex-col justify-center items-center min-h-screen">
-    <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-500 mb-4"></div>
+  <div className={styles.loadingContainer}>
+    <div className={styles.spinner}></div>
     <span className="text-gray-500">Loading event details...</span>
   </div>
 );
@@ -85,16 +85,14 @@ export default function TicketDetails() {
 
   if (!event) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">Event Not Found</h2>
-          <button
-            onClick={() => router.back()}
-            className="bg-white text-gray-800 px-6 py-2 rounded-lg border hover:bg-gray-50 transition-colors"
-          >
-            Go Back
-          </button>
-        </div>
+      <div className={styles.errorContainer}>
+        <h2 className="text-2xl font-bold text-gray-800 mb-4">Event Not Found</h2>
+        <button
+          onClick={() => router.back()}
+          className={styles.homeButton}
+        >
+          Go Back
+        </button>
       </div>
     );
   }
@@ -102,51 +100,53 @@ export default function TicketDetails() {
   const eventPrice = ['free', 'Free', '', '0', '0.0'].includes(event.price) ? '0' : event.price;
 
   return (
-        <Layout title="AfroHub | Connect with African Culture">
-    
- <div className="max-w-6xl mx-auto px-4 py-12 grid grid-cols-1 lg:grid-cols-2 gap-10" style={{ paddingTop: 80 }}>
-  {/* LEFT: Event Image */}
-          
-    <Image
-      src={event.image.startsWith('http') ? event.image : `/images/${event.image}`}
-      alt={event.title}
-      width={700}
-      height={700}
-      className="rounded-[12px] shadow-md object-cover w-full h-auto"
-      />
+    <Layout title="AfroHub | Connect with African Culture">
+      <div className={styles.container}>
+        <div className="max-w-6xl mx-auto px-4 py-12 grid grid-cols-1 lg:grid-cols-2 gap-10" style={{ paddingTop: 80 }}>
+          {/* LEFT: Event Image */}
+          <div className={styles.eventImage}>
+            <Image
+              src={event.image.startsWith('http') ? event.image : `/images/${event.image}`}
+              alt={event.title}
+              width={700}
+              height={700}
+              className="rounded-[12px] shadow-md object-cover w-full h-auto"
+            />
+          </div>
 
-  {/* RIGHT: Event Details */}
-  <div className="space-y-6">
-    <h1 className="text-3xl font-bold text-gray-900">{event.title}</h1>
-    <p className="text-sm text-gray-500">{event.date} • {event.time} • {eventPrice === '0' ? 'Free' : `$${eventPrice}`}
-    </p>
-    <p className="text-gray-700">{event.description}</p>
+          {/* RIGHT: Event Details */}
+          <div className="space-y-6">
+            <h1 className="text-3xl font-bold text-gray-900">{event.title}</h1>
+            <p className="text-sm text-gray-500">
+              {event.date} • {event.time} • {eventPrice === '0' ? 'Free' : `$${eventPrice}`}
+            </p>
+            <p className="text-gray-700">{event.description}</p>
 
-    <div className="flex items-center text-gray-600 space-x-2">
-    <div className={styles.mapContainer}>
-            <div className={styles.map}>
-              <iframe
-                  width="100%"
-                  height="300"
-                  style={{ border: 0, borderRadius: '12px' }}
-                  loading="lazy"
-                  src={`https://www.openstreetmap.org/export/embed.html?bbox=${event.longitude - 0.01}%2C${event.latitude - 0.01}%2C${event.longitude + 0.01}%2C${event.latitude + 0.01}&layer=mapnik&marker=${event.latitude}%2C${event.longitude}`}
-                />
+            <div className="flex items-center text-gray-600 space-x-2">
+              <div className="w-full">
+                <div className="w-full">
+                  <iframe
+                    width="100%"
+                    height="300"
+                    style={{ border: 0, borderRadius: '12px' }}
+                    loading="lazy"
+                    src={`https://www.openstreetmap.org/export/embed.html?bbox=${event.longitude - 0.01}%2C${event.latitude - 0.01}%2C${event.longitude + 0.01}%2C${event.latitude + 0.01}&layer=mapnik&marker=${event.latitude}%2C${event.longitude}`}
+                  />
+                </div>
+              </div>
+            </div>
 
-             
+            <div style={{ paddingTop: 12 }}>
+              <button
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl text-lg shadow-lg transition"
+                onClick={openMap}
+              >
+                View Full Map
+              </button>
             </div>
           </div>
-          
-
-    </div>
-
-<div style={{ paddingTop: 12 }}>
-      <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl text-lg shadow-lg transition" onClick={openMap}>
-     
-  View Full Map  </button></div>
-  </div>
-</div>
-
+        </div>
+      </div>
     </Layout>
   );
 }
