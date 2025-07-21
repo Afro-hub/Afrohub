@@ -326,7 +326,7 @@ export default function TicketDetails() {
       <div
         className="max-w-6xl mx-auto px-4 py-12 grid grid-cols-1 lg:grid-cols-2 gap-10"
         style={{
-          paddingTop: '120px',
+          paddingTop: '180px',
           maxWidth: '72rem',
           margin: '0 auto',
           padding: '3rem 1rem',
