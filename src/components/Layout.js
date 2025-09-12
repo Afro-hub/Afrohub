@@ -66,6 +66,7 @@ export default function Layout({ children, title = 'AfroHub - Connect with Afric
             <Link href="/terms" className={styles.footerLink}>Terms of Service</Link>
             <Link href="/delete-account" className={styles.footerLink}>Delete account</Link>
             <Link href="/contact" className={styles.footerLink}>Contact Us</Link>
+            <Link href="/portal" className={styles.footerLink}>Admin Portal</Link>
           </div>
           <p className={styles.copyright}>&copy; {new Date().getFullYear()} AfroHub. All rights reserved.</p>
         </div>
